@@ -1,10 +1,10 @@
 # ninja log v5
-17	1892	7502156504443422	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	42377eda6472cb81
-24	1952	7502156505070786	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	abcb5c8f79f76c24
-0	1978	7502156505321718	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	476b2eef5cb0cc47
-42	2100	7502156506463950	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	b9d60a6e7c659f04
-50	2142	7502156506950253	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	e5b97970b752095
-5	2246	7502156508028600	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	7eb9d865e9ba69e4
-32	2492	7502156510553177	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	dcc34bbd2aa65902
-11	2737	7502156512901114	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	860ffd9ce0c9e61f
-2738	2933	7502156515001332	C:/Users/leeja/OneDrive/SchoolDocs/585/project/AR-Poker/AR Poker/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/4q10u4x4/obj/arm64-v8a/libgame.so	639241ee618a28bf
+9	2565	7518485769880372	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	180676e729527578
+31	2590	7518485770101515	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	71aa34b8f02b09fe
+22	2592	7518485770393008	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	6756aec9d033c2ec
+51	2593	7518485770383015	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	75b4233bbaeef5f4
+59	2629	7518485771868412	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	cf1b09c35d0cd61e
+1	2948	7518485774690289	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	ef7077933739fb1a
+40	3261	7518485777951122	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	6d6b00fe33c9dc08
+15	3557	7518485781084283	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	ce45c9621c089344
+3557	3822	7518485783747687	C:/Users/leeja/OneDrive/SchoolDocs/585/project/AR-Poker/AR Poker/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/4q10u4x4/obj/arm64-v8a/libgame.so	418b2e52edcd6607

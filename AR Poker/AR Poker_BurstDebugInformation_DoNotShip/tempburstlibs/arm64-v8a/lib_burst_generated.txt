@@ -9,7 +9,7 @@ Library: C:\Users\leeja\OneDrive\SchoolDocs\585\project\AR-Poker\AR Poker\Temp\B
 --target-framework=NetFramework
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\leeja\OneDrive\SchoolDocs\585\project\AR-Poker\AR Poker\Temp\Burst
---key-folder=C:/Program Files/Unity/Hub/Editor/6000.0.19f1/Editor/Data/PlaybackEngines/AndroidPlayer
+--key-folder=C:/Program Files/Unity/Hub/Editor/6000.0.23f1/Editor/Data/PlaybackEngines/AndroidPlayer
 --decode-folder=C:\Users\leeja\OneDrive\SchoolDocs\585\project\AR-Poker\AR Poker\Library\Burst
 --output=C:\Users\leeja\OneDrive\SchoolDocs\585\project\AR-Poker\AR Poker\Temp\BurstOutput\tempburstlibs\arm64-v8a\lib_burst_generated
 --pdb-search-paths=Temp/ManagedSymbols/
@@ -126,7 +126,7 @@ Library: C:\Users\leeja\OneDrive\SchoolDocs\585\project\AR-Poker\AR Poker\Temp\B
 --float-mode=Fast
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\leeja\OneDrive\SchoolDocs\585\project\AR-Poker\AR Poker\Temp\Burst
---key-folder=C:/Program Files/Unity/Hub/Editor/6000.0.19f1/Editor/Data/PlaybackEngines/AndroidPlayer
+--key-folder=C:/Program Files/Unity/Hub/Editor/6000.0.23f1/Editor/Data/PlaybackEngines/AndroidPlayer
 --decode-folder=C:\Users\leeja\OneDrive\SchoolDocs\585\project\AR-Poker\AR Poker\Library\Burst
 --output=C:\Users\leeja\OneDrive\SchoolDocs\585\project\AR-Poker\AR Poker\Temp\BurstOutput\tempburstlibs\arm64-v8a\lib_burst_generated
 --pdb-search-paths=Temp/ManagedSymbols/
@@ -143,7 +143,7 @@ Library: C:\Users\leeja\OneDrive\SchoolDocs\585\project\AR-Poker\AR Poker\Temp\B
 --target-framework=NetFramework
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\leeja\OneDrive\SchoolDocs\585\project\AR-Poker\AR Poker\Temp\Burst
---key-folder=C:/Program Files/Unity/Hub/Editor/6000.0.19f1/Editor/Data/PlaybackEngines/AndroidPlayer
+--key-folder=C:/Program Files/Unity/Hub/Editor/6000.0.23f1/Editor/Data/PlaybackEngines/AndroidPlayer
 --decode-folder=C:\Users\leeja\OneDrive\SchoolDocs\585\project\AR-Poker\AR Poker\Library\Burst
 --output=C:\Users\leeja\OneDrive\SchoolDocs\585\project\AR-Poker\AR Poker\Temp\BurstOutput\tempburstlibs\arm64-v8a\lib_burst_generated
 --pdb-search-paths=Temp/ManagedSymbols/

@@ -739,6 +739,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9205385245671767580, guid: 43d32dea6b45a804e9f0c7966c18af84,
         type: 3}
+      propertyPath: m_text
+      value: 'Quit
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205385245671767580, guid: 43d32dea6b45a804e9f0c7966c18af84,
+        type: 3}
       propertyPath: m_fontColor.b
       value: 1
       objectReference: {fileID: 0}

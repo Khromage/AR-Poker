@@ -4,59 +4,119 @@ using Unity.VisualScripting;
 
 public class MenuManager : MonoBehaviour
 {
-    public GameObject mainMenu;
-    public GameObject singlePlayerMenu;
-    public GameObject quitConfirmation;
 
-    private Stack<GameObject> menuStack = new Stack<GameObject>();
+    // portrait game objects
+    public GameObject mainMenu_portrait;
+    public GameObject singlePlayerMenu_portrait;
+    public GameObject quitConfirmation_portrait;
 
-    void Start()
+    //landscape game objects
+    public GameObject mainMenu_landscape;
+    public GameObject singlePlayerMenu_landscape;
+    public GameObject quitConfirmation_landscape;
+
+    // tracking
+    private GameObject currentMenu;
+    private GameObject previousMenu; // for back button
+    private bool isPortrait;
+
+
+    void Start() 
     {
-        ShowMainMenu();
+        CheckOrientation();
     }
 
-    // Update is called once per frame
+    void Update() 
+    {
+        if (isPortrait && Screen.width > Screen.height){
+            SwitchToLandscape();
+        }
+        else if (!isPortrait && Screen.height > Screen.width)
+        {
+            SwitchToPortrait();
+        }
+    }
+
+    private void CheckOrientation() 
+    {
+        if (Screen.width > Screen.height){
+            SwitchToLandscape();
+        }
+        else         
+        {
+            SwitchToPortrait();
+        }
+    }
+    
+    private void SwitchToPortrait() 
+    {
+        isPortrait = true;
+        ShowCurrentMenu();
+    }
+
+    private void SwitchToLandscape()
+    {
+        isPortrait = false;
+        ShowCurrentMenu();
+    }
+    
+    private void ShowCurrentMenu()
+    {
+        if(currentMenu == null)
+        {
+            ShowMainMenu();
+        }
+        else 
+        {
+            if (currentMenu == mainMenu_portrait || currentMenu == mainMenu_landscape)
+            {
+                ShowMainMenu();
+            }
+            else if (currentMenu == singlePlayerMenu_portrait || currentMenu == singlePlayerMenu_landscape)
+            {
+                ShowSinglePlayerMenu();
+            }
+            else if (currentMenu == quitConfirmation_portrait || currentMenu == quitConfirmation_landscape)
+            {
+                ShowQuitConfirmation();
+            }
+        }
+    }
+
     public void ShowMainMenu()
     {
-        mainMenu.SetActive(true);
-        HideAllMenus();
-        menuStack.Clear();
+        setActiveMenu(isPortrait ? mainMenu_portrait : mainMenu_landscape);
     }
 
     public void ShowSinglePlayerMenu()
     {
-        ShowMenu(singlePlayerMenu);
-        mainMenu.SetActive(false);
+        setActiveMenu(isPortrait ? singlePlayerMenu_portrait : singlePlayerMenu_landscape);
     }
 
     public void ShowQuitConfirmation()
     {
-        ShowMenu(quitConfirmation);
-        mainMenu.SetActive(false);
+        setActiveMenu(isPortrait ? quitConfirmation_portrait : quitConfirmation_landscape);
     }
 
-    private void ShowMenu(GameObject menu)
+    private void setActiveMenu(GameObject newMenu)
     {
-        if(menuStack.Count > 0)
+        if (currentMenu != null)
         {
-            menuStack.Peek().SetActive(false);
+            previousMenu = currentMenu;
+            currentMenu.SetActive(false);
         }
-        menu.SetActive(true);
-        menuStack.Push(menu);
-    }
-
-    private void HideAllMenus()
-    {
-        singlePlayerMenu.SetActive(false);
-        quitConfirmation.SetActive(false);
+        currentMenu = newMenu;
+        currentMenu.SetActive(true);
     }
 
     public void OnBackButtonPressed()
     {
-        if(menuStack.Count > 1)
+        if (previousMenu != null)
         {
-            menuStack.Pop().SetActive(false);
-            menuStack.Peek().SetActive(true);
+            currentMenu.SetActive(false);
+            currentMenu = previousMenu;
+            previousMenu = null;
+            currentMenu.SetActive(true);
         }
         else
         {

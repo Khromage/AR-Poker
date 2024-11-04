@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f673e4fbb73dbe6459018468eed1ad68, type: 3}
+  m_Name: CasinoChips
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 3464093367834636348, guid: e822aee0171f44a43a89fd220d050022, type: 3}
+  Chips:
+  - value: 0
+    material: {fileID: 2100000, guid: 18614be4fc6804141a3ae8c0c64a3fd6, type: 2}
+  - value: 1
+    material: {fileID: 2100000, guid: 7117f1d36e882584fa77baab705b5b51, type: 2}
+  - value: 5
+    material: {fileID: 2100000, guid: c32a33cf1653a3d4aa74e9a55310d2fe, type: 2}
+  - value: 10
+    material: {fileID: 2100000, guid: cc2a541e258da6142ba957d4d1eedb08, type: 2}
+  - value: 25
+    material: {fileID: 2100000, guid: d8b3baa2427391b40a1a8f2b06618b6e, type: 2}
+  - value: 100
+    material: {fileID: 2100000, guid: 955d7c227928ca449800c5d982bd87e2, type: 2}

@@ -1,1 +1,0 @@
-C:\GitHub\AR-Poker\AR Poker\Library\PramData\AndroidApplicationController\Cache\com.unity.template.ar_mobile\gradle-project\unityLibrary\build\intermediates\cxx\Debug\4a20s6b2\obj\arm64-v8a

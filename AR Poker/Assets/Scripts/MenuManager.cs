@@ -24,25 +24,29 @@ public class MenuManager : MonoBehaviour
     void Start() 
     {
         CheckOrientation();
+        Debug.Log("Is this fucking working???");
     }
 
     void Update() 
     {
+        /*
         if (isPortrait && Screen.width > Screen.height){
             SwitchToLandscape();
         }
         else if (!isPortrait && Screen.height > Screen.width)
         {
             SwitchToPortrait();
-        }
+        }*/
+        CheckOrientation();
+
     }
 
     private void CheckOrientation() 
     {
-        if (Screen.width > Screen.height){
+        if (isPortrait && Screen.width > Screen.height){
             SwitchToLandscape();
         }
-        else         
+        else if (!isPortrait && Screen.height > Screen.width)         
         {
             SwitchToPortrait();
         }

@@ -1,0 +1,2 @@
+C:\GitHub\AR-Poker\AR Poker\Library\PramData\AndroidApplicationController\Cache\com.unity.template.ar_mobile\gradle-project\unityLibrary\src\main\cpp\CMakeLists.txt
+C:\GitHub\AR-Poker\AR Poker\Library\PramData\AndroidApplicationController\Cache\com.unity.template.ar_mobile\gradle-project\unityLibrary\src\main\cpp\GameActivity\CMakeLists.txt

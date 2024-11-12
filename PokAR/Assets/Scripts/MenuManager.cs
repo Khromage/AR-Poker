@@ -9,13 +9,17 @@ public class MenuManager : MonoBehaviour
     public GameObject mainMenu_portrait;
     public GameObject singlePlayerMenu_portrait;
     public GameObject quitConfirmation_portrait;
-    public GameObject singlePlayerMenuStart_portrait;
+    //public GameObject singlePlayerMenuStart_portrait;
+    public GameObject singlePlayerGameType_portrait;
+    public GameObject singlePlayerAddPC_portrait;
 
     //landscape game objects
     public GameObject mainMenu_landscape;
     public GameObject singlePlayerMenu_landscape;
     public GameObject quitConfirmation_landscape;
-    public GameObject singlePlayerMenuStart_landscape;
+    //public GameObject singlePlayerMenuStart_landscape;
+    public GameObject singlePlayerGameType_landscape;
+    public GameObject singlePlayerAddPC_landscape;
 
     // tracking
     private GameObject currentMenu;
@@ -101,9 +105,14 @@ public class MenuManager : MonoBehaviour
         setActiveMenu(isPortrait ? singlePlayerMenu_portrait : singlePlayerMenu_landscape);
     }
 
-    public void ShowStartGameMenu()
+    public void ShowSinglePlayerGameType()
     {
-        setActiveMenu(isPortrait ? singlePlayerMenuStart_portrait : singlePlayerMenuStart_landscape);
+        setActiveMenu(isPortrait ? singlePlayerGameType_portrait : singlePlayerGameType_landscape);
+    }
+
+    public void ShowSinglePlayerAddPC()
+    {
+        setActiveMenu(isPortrait ? singlePlayerAddPC_portrait : singlePlayerAddPC_landscape );
     }
 
     public void ShowQuitConfirmation()

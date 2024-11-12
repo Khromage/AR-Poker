@@ -9,11 +9,13 @@ public class MenuManager : MonoBehaviour
     public GameObject mainMenu_portrait;
     public GameObject singlePlayerMenu_portrait;
     public GameObject quitConfirmation_portrait;
+    public GameObject singlePlayerMenuStart_portrait;
 
     //landscape game objects
     public GameObject mainMenu_landscape;
     public GameObject singlePlayerMenu_landscape;
     public GameObject quitConfirmation_landscape;
+    public GameObject singlePlayerMenuStart_landscape;
 
     // tracking
     private GameObject currentMenu;
@@ -90,11 +92,18 @@ public class MenuManager : MonoBehaviour
     public void ShowMainMenu()
     {
         setActiveMenu(isPortrait ? mainMenu_portrait : mainMenu_landscape);
+        Debug.Log("In main menu");
+
     }
 
     public void ShowSinglePlayerMenu()
     {
         setActiveMenu(isPortrait ? singlePlayerMenu_portrait : singlePlayerMenu_landscape);
+    }
+
+    public void ShowStartGameMenu()
+    {
+        setActiveMenu(isPortrait ? singlePlayerMenuStart_portrait : singlePlayerMenuStart_landscape);
     }
 
     public void ShowQuitConfirmation()

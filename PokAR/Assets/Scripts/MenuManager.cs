@@ -12,6 +12,9 @@ public class MenuManager : MonoBehaviour
     //public GameObject singlePlayerMenuStart_portrait;
     public GameObject singlePlayerGameType_portrait;
     public GameObject singlePlayerAddPC_portrait;
+    public GameObject multiPlayerMenu_portrait;
+    public GameObject multiPlayerHostCodeView_portrait;
+    public GameObject multiplayerJoinRoomView_portrait;
 
     //landscape game objects
     public GameObject mainMenu_landscape;
@@ -20,6 +23,9 @@ public class MenuManager : MonoBehaviour
     //public GameObject singlePlayerMenuStart_landscape;
     public GameObject singlePlayerGameType_landscape;
     public GameObject singlePlayerAddPC_landscape;
+    public GameObject multiPlayerMenu_landscape;
+    public GameObject multiPlayerHostCodeView_landscape;
+    public GameObject multiplayerJoinRoomView_landscape;
 
     // tracking
     private GameObject currentMenu;
@@ -90,34 +96,69 @@ public class MenuManager : MonoBehaviour
             {
                 ShowQuitConfirmation();
             }
+            else if (currentMenu == singlePlayerGameType_portrait || currentMenu == singlePlayerGameType_landscape)
+            {
+                ShowSinglePlayerGameType();
+            }
+            else if (currentMenu == singlePlayerAddPC_portrait || currentMenu == singlePlayerAddPC_landscape)
+            {
+                ShowSinglePlayerAddPC();
+            }
+            else if (currentMenu == multiPlayerMenu_portrait || currentMenu == multiPlayerMenu_landscape)
+            {
+                ShowMultiPlayerMenu();
+            }
+            else if (currentMenu == multiPlayerHostCodeView_portrait || currentMenu == multiPlayerHostCodeView_landscape)
+            {
+                ShowHostCodeView();
+            }
+            else if (currentMenu == multiplayerJoinRoomView_portrait || currentMenu == multiplayerJoinRoomView_landscape)
+            {
+                ShowJoinRoomView();
+            }
         }
     }
 
-    public void ShowMainMenu()
+    public void ShowMainMenu() // good
     {
         setActiveMenu(isPortrait ? mainMenu_portrait : mainMenu_landscape);
         Debug.Log("In main menu");
 
     }
 
-    public void ShowSinglePlayerMenu()
+    public void ShowSinglePlayerMenu() // good
     {
         setActiveMenu(isPortrait ? singlePlayerMenu_portrait : singlePlayerMenu_landscape);
     }
 
-    public void ShowSinglePlayerGameType()
+    public void ShowSinglePlayerGameType() // good
     {
         setActiveMenu(isPortrait ? singlePlayerGameType_portrait : singlePlayerGameType_landscape);
     }
 
-    public void ShowSinglePlayerAddPC()
+    public void ShowSinglePlayerAddPC() //good
     {
         setActiveMenu(isPortrait ? singlePlayerAddPC_portrait : singlePlayerAddPC_landscape );
     }
 
-    public void ShowQuitConfirmation()
+    public void ShowQuitConfirmation() // good
     {
         setActiveMenu(isPortrait ? quitConfirmation_portrait : quitConfirmation_landscape);
+    }
+
+    public void ShowMultiPlayerMenu()
+    {
+        setActiveMenu(isPortrait ? multiPlayerMenu_portrait : multiPlayerMenu_landscape);
+    }
+
+    public void ShowHostCodeView()
+    {
+        setActiveMenu(isPortrait ? multiPlayerHostCodeView_portrait : multiPlayerHostCodeView_landscape);
+    }
+
+    public void ShowJoinRoomView()
+    {
+        setActiveMenu(isPortrait ? multiplayerJoinRoomView_portrait : multiplayerJoinRoomView_landscape);
     }
 
     private void setActiveMenu(GameObject newMenu)

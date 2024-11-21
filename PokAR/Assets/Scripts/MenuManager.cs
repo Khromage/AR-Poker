@@ -36,7 +36,7 @@ public class MenuManager : MonoBehaviour
     void Start() 
     {
         CheckOrientation();
-        Debug.Log("Is this fucking working???");
+        //Debug.Log("Is this fucking working???");
     }
 
     void Update() 

@@ -53,6 +53,7 @@ public class MenuManager : MonoBehaviour
 
     }
 
+
     private void CheckOrientation() 
     {
         if (isPortrait && Screen.width > Screen.height){

@@ -7,8 +7,7 @@ using System;
 public class GameManager : MonoBehaviour
 {
     
-    // Define the delegate for the event
-    public event EventHandler<GameStartEventData> OnGameStart;
+
 
     // Singleton instance for easy access
     public static GameManager Instance { get; private set; }
@@ -45,26 +44,38 @@ public class GameManager : MonoBehaviour
 
     }
 
-    
-
-    // Method to start the Game
-    public void StartGame(string gameMode, string difficulty, int npcCount)
-    {
-        Debug.Log("Game is starting...");
-        
-        // Create event data
-        GameStartEventData eventData = new GameStartEventData(gameMode, difficulty, npcCount);
-        
-        // Invoke the event
-        OnGameStart?.Invoke(this, eventData);
-    }
-
     // Update is called once per frame
     void Update()
     {
         
     }
 
+    private void OnEnable()
+    {
+        MenuManager.OnGameStart += HandleGameStart;
+
+    }
+
+    private void OnDisable()
+    {
+        MenuManager.OnGameStart -= HandleGameStart;
+    }
+
+    private void HandleGameStart(object sender, GameStartEventData e)
+    {
+        Debug.Log($"Match Started! Mode: {e.GameMode}, Difficulty: {e.Difficulty}, NPCs: {e.NPCCount}");
+        
+
+
+    }
+
+    // Method to start the Game
+    public void StartGame(string gameMode, string difficulty, int npcCount)
+    {
+        Debug.Log("Game is starting...");
+        
+
+    }
 
     
 }

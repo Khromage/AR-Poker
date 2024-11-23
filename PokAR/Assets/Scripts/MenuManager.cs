@@ -1,9 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using System;
+using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
+
+    // Define the delegate for the event
+    public static event EventHandler<GameStartEventData> OnGameStart;
 
     // portrait game objects
     public GameObject mainMenu_portrait;
@@ -31,6 +36,8 @@ public class MenuManager : MonoBehaviour
     private GameObject currentMenu;
     private GameObject previousMenu; // for back button
     private bool isPortrait;
+
+    private string gameDifficulty;
 
 
     void Start() 
@@ -137,6 +144,13 @@ public class MenuManager : MonoBehaviour
         setActiveMenu(isPortrait ? singlePlayerGameType_portrait : singlePlayerGameType_landscape);
     }
 
+    // update difficulty string
+    public void SetDifficulty(GameObject difficultyButton)
+    {
+        gameDifficulty = difficultyButton.gameObject.name.ToString();
+        Debug.Log($"SinglePlayer difficulty set to: {gameDifficulty}");
+    }
+
     public void ShowSinglePlayerAddPC() //good
     {
         setActiveMenu(isPortrait ? singlePlayerAddPC_portrait : singlePlayerAddPC_landscape );
@@ -188,5 +202,17 @@ public class MenuManager : MonoBehaviour
         }
     }
 
+
+    public void StartSinglePlayerGame(GameObject npcSlider)
+    {
+        int npcCount = (int)npcSlider.GetComponent<Slider>().value;
+
+        // Create event data
+        GameStartEventData eventData = new GameStartEventData("Single", gameDifficulty, npcCount);
+        
+        // Invoke the event
+        OnGameStart?.Invoke(this, eventData);
+        Debug.Log($"Broadcasting StartGameEvent via MenuManager with params: Single, {gameDifficulty}, {npcCount}");
+    }
 
 }

@@ -211,8 +211,8 @@ public class MenuManager : MonoBehaviour
         GameStartEventData eventData = new GameStartEventData("Single", gameDifficulty, npcCount);
         
         // Invoke the event
-        OnGameStart?.Invoke(this, eventData);
         Debug.Log($"Broadcasting StartGameEvent via MenuManager with params: Single, {gameDifficulty}, {npcCount}");
+        OnGameStart?.Invoke(this, eventData);
     }
 
 }

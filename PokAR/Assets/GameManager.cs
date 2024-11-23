@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
 
     private void HandleGameStart(object sender, GameStartEventData e)
     {
-        Debug.Log($"Match Started! Mode: {e.GameMode}, Difficulty: {e.Difficulty}, NPCs: {e.NPCCount}");
+        Debug.Log($"Game Started! Mode: {e.GameMode}, Difficulty: {e.Difficulty}, NPCs: {e.NPCCount}");
         
 
 

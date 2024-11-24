@@ -6,11 +6,17 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
-    
-
-
     // Singleton instance for easy access
     public static GameManager Instance { get; private set; }
+
+
+    // GameMode Prefabs
+    public GameObject SinglePlayerPrefab;
+    public GameObject MultiPlayerPrefab;
+
+    // Holds current Single/Multi Player game
+    [SerializeField]
+    protected GameObject CurrentGame;
 
     private void Awake()
     {
@@ -61,21 +67,32 @@ public class GameManager : MonoBehaviour
         MenuManager.OnGameStart -= HandleGameStart;
     }
 
+    // Method to start the Game
     private void HandleGameStart(object sender, GameStartEventData e)
     {
-        Debug.Log($"Game Started! Mode: {e.GameMode}, Difficulty: {e.Difficulty}, NPCs: {e.NPCCount}");
+        if (CurrentGame == null)
+        {
+            Debug.Log($"Game Starting! Mode: {e.GameMode}, Difficulty: {e.Difficulty}, NPCs: {e.NPCCount}");
         
-
+            switch (e.GameMode)
+            {
+                case "Single":
+                    GameObject SinglePlayerGame = Instantiate(SinglePlayerPrefab, transform.position, transform.rotation);
+                    SinglePlayerGame.GetComponent<SinglePlayerGameManager>().Initialize(e.Difficulty, e.NPCCount);
+                    CurrentGame = SinglePlayerGame;
+                    
+                    break;
+                case "Multi":
+                    GameObject MultiPlayerGame = Instantiate(MultiPlayerPrefab, transform.position, transform.rotation);
+                    MultiPlayerGame.GetComponent<MultiPlayerGameManager>().Initialize();
+                    CurrentGame = MultiPlayerGame;
+                    break;
+            }
+        } else 
+        {
+            Debug.Log($"ERROR ~ CurrentGame already Exists: {CurrentGame}");
+        }
 
     }
-
-    // Method to start the Game
-    public void StartGame(string gameMode, string difficulty, int npcCount)
-    {
-        Debug.Log("Game is starting...");
-        
-
-    }
-
     
 }

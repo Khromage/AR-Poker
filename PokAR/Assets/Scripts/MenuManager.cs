@@ -104,10 +104,6 @@ public class MenuManager : MonoBehaviour
             {
                 ShowQuitConfirmation();
             }
-            else if (currentMenu == singlePlayerGameType_portrait || currentMenu == singlePlayerGameType_landscape)
-            {
-                ShowSinglePlayerGameType();
-            }
             else if (currentMenu == singlePlayerAddPC_portrait || currentMenu == singlePlayerAddPC_landscape)
             {
                 ShowSinglePlayerAddPC();
@@ -139,10 +135,6 @@ public class MenuManager : MonoBehaviour
         setActiveMenu(isPortrait ? singlePlayerMenu_portrait : singlePlayerMenu_landscape);
     }
 
-    public void ShowSinglePlayerGameType() // good
-    {
-        setActiveMenu(isPortrait ? singlePlayerGameType_portrait : singlePlayerGameType_landscape);
-    }
 
     // update difficulty string
     public void SetDifficulty(GameObject difficultyButton)
@@ -213,6 +205,11 @@ public class MenuManager : MonoBehaviour
         // Invoke the event
         Debug.Log($"Broadcasting StartGameEvent via MenuManager with params: Single, {gameDifficulty}, {npcCount}");
         OnGameStart?.Invoke(this, eventData);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
 }

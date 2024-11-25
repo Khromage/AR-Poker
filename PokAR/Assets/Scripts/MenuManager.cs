@@ -32,6 +32,12 @@ public class MenuManager : MonoBehaviour
     public GameObject multiPlayerHostCodeView_landscape;
     public GameObject multiplayerJoinRoomView_landscape;
 
+
+    // gameplay UI
+    public GameObject gameplay_portrait;
+    public GameObject gameplay_landscape;
+    private bool isGameOn;
+
     // tracking
     private GameObject currentMenu;
     private GameObject previousMenu; // for back button
@@ -75,13 +81,27 @@ public class MenuManager : MonoBehaviour
     private void SwitchToPortrait() 
     {
         isPortrait = true;
-        ShowCurrentMenu();
+        if (isGameOn)
+        {
+
+        }
+        else
+        {
+            ShowCurrentMenu();
+        }
     }
 
     private void SwitchToLandscape()
     {
         isPortrait = false;
-        ShowCurrentMenu();
+        if (isGameOn)
+        {
+
+        }
+        else
+        {
+            ShowCurrentMenu();    
+        }
     }
     
     private void ShowCurrentMenu()
@@ -205,6 +225,12 @@ public class MenuManager : MonoBehaviour
         // Invoke the event
         Debug.Log($"Broadcasting StartGameEvent via MenuManager with params: Single, {gameDifficulty}, {npcCount}");
         OnGameStart?.Invoke(this, eventData);
+        isGameOn = true;
+    }
+
+    public void ShowGameUI()
+    {
+
     }
 
     public void QuitGame()

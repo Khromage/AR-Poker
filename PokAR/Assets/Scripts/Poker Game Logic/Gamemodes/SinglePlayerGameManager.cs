@@ -69,13 +69,20 @@ public class SinglePlayerGameManager : MonoBehaviour
         arRaycastManager = FindObjectOfType<ARRaycastManager>();
 
         // Instantiate the placement indicator and deactivate it initially
-        placementIndicator = Instantiate(placementIndicatorPrefab);
+        placementIndicator = Instantiate(placementIndicatorPrefab, gameObject.transform);
         isPlacementIndicatorActive = true;
         //placementIndicator.SetActive(false);
     }
 
     void Update()
     {
+        if (Keyboard.current.cKey.wasPressedThisFrame)
+        {
+            ConfirmPlacement();
+        }
+
+
+
         if (!gameSetupStarted)
         {
             bool inputDetected = false;

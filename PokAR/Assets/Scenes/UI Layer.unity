@@ -6461,6 +6461,8 @@ MonoBehaviour:
   multiPlayerMenu_landscape: {fileID: 2018817285}
   multiPlayerHostCodeView_landscape: {fileID: 833635541}
   multiplayerJoinRoomView_landscape: {fileID: 810332395}
+  gameplay_portrait: {fileID: 0}
+  gameplay_landscape: {fileID: 0}
 --- !u!4 &1553569592
 Transform:
   m_ObjectHideFlags: 0
@@ -7725,7 +7727,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1926333899
 MonoBehaviour:
   m_ObjectHideFlags: 0

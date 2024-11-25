@@ -9879,6 +9879,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2440199269010722053, guid: a67e68cb296b9e04e91768fdbf3dfeea,
+        type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3285861226998169342, guid: a67e68cb296b9e04e91768fdbf3dfeea,
         type: 3}
       propertyPath: m_Pivot.x
@@ -10087,6 +10092,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6243808166923489689, guid: ebe7010156b61894e85dbdb0a6a07ade,
+        type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6457552727964857857, guid: ebe7010156b61894e85dbdb0a6a07ade,
         type: 3}

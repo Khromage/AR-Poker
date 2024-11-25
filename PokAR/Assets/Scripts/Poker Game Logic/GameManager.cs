@@ -94,5 +94,19 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
+    public void EndCurrentGame()
+    {
+        if (CurrentGame != null)
+        {
+            Destroy(CurrentGame);
+            CurrentGame = null;
+            // Notify any necessary components about the game ending (optional)
+        }
+        else
+        {
+            Debug.Log("No active game to end.");
+        }
+    }
     
 }

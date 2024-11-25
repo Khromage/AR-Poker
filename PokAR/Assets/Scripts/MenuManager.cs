@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using System;
 using UnityEngine.UI;
+using TMPro;
 
 public class MenuManager : MonoBehaviour
 {
@@ -36,13 +37,14 @@ public class MenuManager : MonoBehaviour
     // gameplay UI
     public GameObject gameplay_portrait;
     public GameObject gameplay_landscape;
-    private bool isGameOn;
+    public GameObject gameMenu_portrait;
+    public GameObject gameMenu_landscape;
 
     // tracking
     private GameObject currentMenu;
     private GameObject previousMenu; // for back button
     private bool isPortrait;
-
+    private bool isGameOn;
     private string gameDifficulty;
 
 
@@ -83,7 +85,7 @@ public class MenuManager : MonoBehaviour
         isPortrait = true;
         if (isGameOn)
         {
-
+            ShowGameUI();
         }
         else
         {
@@ -96,7 +98,7 @@ public class MenuManager : MonoBehaviour
         isPortrait = false;
         if (isGameOn)
         {
-
+            ShowGameUI();
         }
         else
         {
@@ -166,6 +168,7 @@ public class MenuManager : MonoBehaviour
     public void ShowSinglePlayerAddPC() //good
     {
         setActiveMenu(isPortrait ? singlePlayerAddPC_portrait : singlePlayerAddPC_landscape );
+
     }
 
     public void ShowQuitConfirmation() // good
@@ -217,6 +220,7 @@ public class MenuManager : MonoBehaviour
 
     public void StartSinglePlayerGame(GameObject npcSlider)
     {
+        // should i remove this part?
         int npcCount = (int)npcSlider.GetComponent<Slider>().value;
 
         // Create event data
@@ -226,11 +230,46 @@ public class MenuManager : MonoBehaviour
         Debug.Log($"Broadcasting StartGameEvent via MenuManager with params: Single, {gameDifficulty}, {npcCount}");
         OnGameStart?.Invoke(this, eventData);
         isGameOn = true;
+        ShowGameUI();
+    }
+
+    public void EndGame()
+    {
+        Debug.Log("Game Ended");
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.EndCurrentGame();
+        }
+
+        isGameOn = false;
+        gameDifficulty = null;
+
+        if (gameplay_portrait != null) gameplay_portrait.SetActive(false);
+        if (gameplay_landscape != null) gameplay_landscape.SetActive(false);
+
+
+        ShowMainMenu();
     }
 
     public void ShowGameUI()
     {
+        currentMenu.SetActive(false);
+        if(isPortrait)
+        {
+            gameplay_landscape.SetActive(false);
+            gameplay_portrait.SetActive(true);
+        }
+        else
+        {
+            gameplay_portrait.SetActive(false);
+            gameplay_landscape.SetActive(true);
+        }
+    }
 
+    public void ShowGameMenu()
+    {
+        setActiveMenu(isPortrait ? gameMenu_portrait : gameMenu_landscape);
     }
 
     public void QuitGame()

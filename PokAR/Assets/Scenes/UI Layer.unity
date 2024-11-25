@@ -5081,6 +5081,7 @@ GameObject:
   - component: {fileID: 1387996281}
   - component: {fileID: 1387996283}
   - component: {fileID: 1387996282}
+  - component: {fileID: 1387996284}
   m_Layer: 5
   m_Name: NPCCount
   m_TagString: Untagged
@@ -5205,6 +5206,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1387996280}
   m_CullTransparentMesh: 1
+--- !u!114 &1387996284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387996280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b724f40b32cef14e83f124cd55c148b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NPCCountSlider: {fileID: 1894551240}
 --- !u!1001 &1409418839
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8479,16 +8493,16 @@ MonoBehaviour:
   m_HandleRect: {fileID: 873495249}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 8
+  m_MaxValue: 4
   m_WholeNumbers: 1
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1387996282}
-        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-        m_MethodName: set_text
-        m_Mode: 5
+      - m_Target: {fileID: 1387996284}
+        m_TargetAssemblyTypeName: NPCCountDisplayer, Assembly-CSharp
+        m_MethodName: UpdateNPCCount
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

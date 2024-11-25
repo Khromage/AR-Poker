@@ -210,6 +210,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1585201990951412, guid: 886609fc1566e4c27b399f1095d6de18,
         type: 3}
+    - target: {fileID: 2512387470528047737, guid: 48cb3fb68c91eb94999fd99957eb0cae,
+        type: 3}
+      propertyPath: m_DetectionMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2512387470528047738, guid: 48cb3fb68c91eb94999fd99957eb0cae,
         type: 3}
       propertyPath: m_RootOrder
@@ -363,6 +368,7 @@ MonoBehaviour:
     type: 3}
   MultiPlayerPrefab: {fileID: 5802953369313764595, guid: afde723351a74c444a120a0c9e177586,
     type: 3}
+  CurrentGame: {fileID: 0}
 --- !u!4 &832472824
 Transform:
   m_ObjectHideFlags: 0

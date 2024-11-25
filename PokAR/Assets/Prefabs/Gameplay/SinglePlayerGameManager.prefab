@@ -44,3 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 727bded490c1e594db7cf51574faf69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TableAssets: {fileID: 11400000, guid: 00e66c5ba5dcb0848b2d6a478459dc8c, type: 2}
+  ChipAssets: {fileID: 11400000, guid: 4ccc13c6efbc6aa43994711f4c851e49, type: 2}
+  CardAssets: {fileID: 11400000, guid: c17bb3ae8ffae5f47bcba8e490a4eec3, type: 2}
+  difficulty: 
+  numNPC: 0
+  placementIndicatorPrefab: {fileID: 2706410837814743508, guid: def5bb952c7cce54ab1971c721211e85,
+    type: 3}

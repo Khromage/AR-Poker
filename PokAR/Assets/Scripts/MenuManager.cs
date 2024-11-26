@@ -233,10 +233,10 @@ public class MenuManager : MonoBehaviour
         OnGameStart?.Invoke(this, eventData);
         currentMenu.SetActive(false);
 
-        gameMenu_tableConfirmation.SetActive(true);
+        //gameMenu_tableConfirmation.SetActive(true);
         isGameOn = true;
 
-        //ShowGameUI();
+        ShowGameUI();
     }
 
     public void EndGame()

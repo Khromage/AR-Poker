@@ -77,11 +77,11 @@ public class SinglePlayerGameManager : MonoBehaviour
 
     void Update()
     {
-        /* replaced with button
+        // replaced with button
         if (Keyboard.current.cKey.wasPressedThisFrame)
         {
             ConfirmPlacement();
-        }*/
+        }
 
 
         if (!gameSetupStarted)
@@ -167,6 +167,7 @@ public class SinglePlayerGameManager : MonoBehaviour
             gameSetupStarted = true;
 
                     // Call ShowGameUI from the MenuManager
+                    /*
             MenuManager menuManager = FindObjectOfType<MenuManager>();
             if (menuManager != null)
             {
@@ -177,6 +178,7 @@ public class SinglePlayerGameManager : MonoBehaviour
             {
                 Debug.Log("yup, not working");
             }
+            */
         }
     }
 

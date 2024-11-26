@@ -233,7 +233,7 @@ public class MenuManager : MonoBehaviour
         OnGameStart?.Invoke(this, eventData);
         currentMenu.SetActive(false);
 
-        //gameMenu_tableConfirmation.SetActive(true);
+        gameMenu_tableConfirmation.SetActive(true);
         isGameOn = true;
 
         ShowGameUI();
@@ -275,11 +275,14 @@ public class MenuManager : MonoBehaviour
 
     public void ConfirmPress()
     {
-        GameObject currentGame = GameManager.Instance.GetComponent<GameManager>().CurrentGame;
-        if(currentGame.GetComponent<SinglePlayerGameManager>() != null)
+        Debug.Log(GameManager.Instance);
+        GameObject currentGame = GameManager.Instance.CurrentGame;
+        Debug.Log(currentGame.name);
+
+        var spg = currentGame.GetComponent<SinglePlayerGameManager>(); 
+        if(spg != null)
         {
-            GameObject singleGO = GameObject.Find("SinglePlayerGameManager");
-            singleGO.GetComponent<SinglePlayerGameManager>().ConfirmPlacement();
+            spg.ConfirmPlacement();
         }
     }
 

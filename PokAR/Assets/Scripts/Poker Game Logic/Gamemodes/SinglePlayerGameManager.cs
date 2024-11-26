@@ -21,7 +21,7 @@ public class SinglePlayerGameManager : MonoBehaviour
     private int numNPC;
 
     private List<GameObject> activeCards = new List<GameObject>();
-    private GameObject table;
+    private GameObject gameTable;
     private List<GameObject> chips = new List<GameObject>();
 
     private List<GameObject> communityCards = new List<GameObject>();
@@ -35,6 +35,7 @@ public class SinglePlayerGameManager : MonoBehaviour
     private bool gameSetupStarted = false;
 
     private static List<ARRaycastHit> hits = new List<ARRaycastHit>();
+    [SerializeField]
     private GameObject placementIndicator;
     private bool isPlacementIndicatorActive = false;
 
@@ -182,14 +183,14 @@ public class SinglePlayerGameManager : MonoBehaviour
     private void SetupGame()
     {
         // Note: Removed redundant call to SetupTable since it's already called in ConfirmPlacement()
-        SetupChips();
+        //SetupChips();
         SetupDeck();
         StartCoroutine(GameLoop());
     }
 
     private void SetupTable(Vector3 position, Quaternion rotation)
     {
-        table = Instantiate(TableAssets.Tables[0].Prefab, position, rotation, gameObject.transform);
+        gameTable = Instantiate(TableAssets.Tables[0].Prefab, position, rotation, gameObject.transform);
         Debug.Log("Table has been set up.");
     }
 
@@ -232,6 +233,10 @@ public class SinglePlayerGameManager : MonoBehaviour
             cardObj.transform.GetChild(1).GetComponent<Renderer>().material = CardBackMaterial;
             playerCards.Add(cardObj);
             activeCards.Add(cardObj);
+
+            cardObj.transform.localScale /= 2;
+            cardObj.transform.position = gameTable.transform.GetChild(1).GetChild(0).GetChild(i).transform.position;
+            cardObj.transform.rotation = gameTable.transform.GetChild(1).GetChild(0).GetChild(i).transform.rotation;
         }
 
         // Deal two cards to each NPC
@@ -245,6 +250,10 @@ public class SinglePlayerGameManager : MonoBehaviour
                 cardObj.transform.GetChild(1).GetComponent<Renderer>().material = CardBackMaterial;
                 npcCards[npc].Add(cardObj);
                 activeCards.Add(cardObj);
+
+                cardObj.transform.localScale /= 2;
+                cardObj.transform.position = gameTable.transform.GetChild(npc+2).GetChild(0).GetChild(i).transform.position;
+                cardObj.transform.rotation = gameTable.transform.GetChild(npc+2).GetChild(0).GetChild(i).transform.rotation;
             }
         }
         Debug.Log("Cards have been dealt.");
@@ -286,9 +295,9 @@ public class SinglePlayerGameManager : MonoBehaviour
         int suitIndex = System.Array.IndexOf(new string[] { "Hearts", "Diamonds", "Clubs", "Spades" }, card.Suit);
         if (suitIndex >= 0 && suitIndex < CardAssets.Suits.Length)
         {
-            if (card.Value >= 1 && card.Value <= CardAssets.Suits[suitIndex].Faces.Length)
+            if (card.Value >= 1 && card.Value < CardAssets.Suits[suitIndex].Faces.Length)
             {
-                return CardAssets.Suits[suitIndex].Faces[card.Value - 1];
+                return CardAssets.Suits[suitIndex].Faces[card.Value];
             }
         }
         Debug.LogError("Invalid card suit or value!");
@@ -300,11 +309,14 @@ public class SinglePlayerGameManager : MonoBehaviour
     {
         for (int suitIndex = 0; suitIndex < CardAssets.Suits.Length; suitIndex++)
         {
-            for (int faceIndex = 0; faceIndex < CardAssets.Suits[suitIndex].Faces.Length; faceIndex++)
+            Debug.Log("SEARCHING SUITS FOR CARD FROM MAT");
+            for (int faceIndex = 1; faceIndex < CardAssets.Suits[suitIndex].Faces.Length; faceIndex++)
             {
+                Debug.Log("SEARCHING CARDS FOR CARD FROM MAT");
+
                 if (CardAssets.Suits[suitIndex].Faces[faceIndex] == mat)
                 {
-                    return new Card { Suit = CardAssets.Suits[suitIndex].Name, Value = faceIndex + 1 };
+                    return new Card { Suit = CardAssets.Suits[suitIndex].Name, Value = faceIndex };
                 }
             }
         }
@@ -368,6 +380,6 @@ public class SinglePlayerGameManager : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         // Determine winner
-        DetermineWinner();
+        //DetermineWinner();
     }
 }

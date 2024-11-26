@@ -39,6 +39,7 @@ public class MenuManager : MonoBehaviour
     public GameObject gameplay_landscape;
     public GameObject gameMenu_portrait;
     public GameObject gameMenu_landscape;
+    public GameObject gameMenu_tableConfirmation;
 
     // tracking
     private GameObject currentMenu;
@@ -46,6 +47,7 @@ public class MenuManager : MonoBehaviour
     private bool isPortrait;
     private bool isGameOn;
     private string gameDifficulty;
+
 
 
     void Start() 
@@ -229,8 +231,12 @@ public class MenuManager : MonoBehaviour
         // Invoke the event
         Debug.Log($"Broadcasting StartGameEvent via MenuManager with params: Single, {gameDifficulty}, {npcCount}");
         OnGameStart?.Invoke(this, eventData);
+        currentMenu.SetActive(false);
+
+        gameMenu_tableConfirmation.SetActive(true);
         isGameOn = true;
-        ShowGameUI();
+
+        //ShowGameUI();
     }
 
     public void EndGame()
@@ -254,7 +260,7 @@ public class MenuManager : MonoBehaviour
 
     public void ShowGameUI()
     {
-        currentMenu.SetActive(false);
+        gameMenu_tableConfirmation.SetActive(false);
         if(isPortrait)
         {
             gameplay_landscape.SetActive(false);
@@ -264,6 +270,16 @@ public class MenuManager : MonoBehaviour
         {
             gameplay_portrait.SetActive(false);
             gameplay_landscape.SetActive(true);
+        }
+    }
+
+    public void ConfirmPress()
+    {
+        GameObject currentGame = GameManager.Instance.GetComponent<GameManager>().CurrentGame;
+        if(currentGame.GetComponent<SinglePlayerGameManager>() != null)
+        {
+            GameObject singleGO = GameObject.Find("SinglePlayerGameManager");
+            singleGO.GetComponent<SinglePlayerGameManager>().ConfirmPlacement();
         }
     }
 

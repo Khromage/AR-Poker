@@ -76,11 +76,11 @@ public class SinglePlayerGameManager : MonoBehaviour
 
     void Update()
     {
+        /* replaced with button
         if (Keyboard.current.cKey.wasPressedThisFrame)
         {
             ConfirmPlacement();
-        }
-
+        }*/
 
 
         if (!gameSetupStarted)
@@ -149,8 +149,10 @@ public class SinglePlayerGameManager : MonoBehaviour
 
     public void ConfirmPlacement()
     {
+        Debug.Log("CONFIRMINGGGGGGGGGG");
         if (isPlacementIndicatorActive)
         {
+            Debug.Log("GOING IN");
             // Store the confirmed position and rotation
             confirmedPosition = placementIndicator.transform.position;
             confirmedRotation = placementIndicator.transform.rotation;
@@ -162,6 +164,18 @@ public class SinglePlayerGameManager : MonoBehaviour
             // Disable further changes to the placement indicator
             placementIndicator.SetActive(false);
             gameSetupStarted = true;
+
+                    // Call ShowGameUI from the MenuManager
+            MenuManager menuManager = FindObjectOfType<MenuManager>();
+            if (menuManager != null)
+            {
+                Debug.Log("yo is this workign");
+                menuManager.ShowGameUI();
+            }
+            else
+            {
+                Debug.Log("yup, not working");
+            }
         }
     }
 

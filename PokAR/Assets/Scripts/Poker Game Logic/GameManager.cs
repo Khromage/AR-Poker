@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
 
     // Holds current Single/Multi Player game
     [SerializeField]
-    protected GameObject CurrentGame;
+    public GameObject CurrentGame;
 
     private void Awake()
     {

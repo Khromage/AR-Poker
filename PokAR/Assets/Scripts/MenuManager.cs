@@ -52,6 +52,7 @@ public class MenuManager : MonoBehaviour
 
     void Start() 
     {
+        ShowCurrentMenu();
         CheckOrientation();
         //Debug.Log("Is this fucking working???");
     }
@@ -173,6 +174,12 @@ public class MenuManager : MonoBehaviour
 
     }
 
+    public void ShowTablePlacementConfirm() //
+    {
+        setActiveMenu(isPortrait ? gameMenu_tableConfirmation : gameMenu_tableConfirmation );
+
+    }
+
     public void ShowQuitConfirmation() // good
     {
         setActiveMenu(isPortrait ? quitConfirmation_portrait : quitConfirmation_landscape);
@@ -231,12 +238,13 @@ public class MenuManager : MonoBehaviour
         // Invoke the event
         Debug.Log($"Broadcasting StartGameEvent via MenuManager with params: Single, {gameDifficulty}, {npcCount}");
         OnGameStart?.Invoke(this, eventData);
-        currentMenu.SetActive(false);
+        
+        //currentMenu.SetActive(false);
 
-        gameMenu_tableConfirmation.SetActive(true);
+        ShowTablePlacementConfirm();
         isGameOn = true;
 
-        ShowGameUI();
+        //ShowGameUI();
     }
 
     public void EndGame()

@@ -176,9 +176,9 @@ public class MenuManager : MonoBehaviour
 
     }
 
-    public void ShowTablePlacementConfirm() //
+    public void ShowTablePlacementConfirm() // activitaing confirmation button
     {
-        setActiveMenu(isPortrait ? gameMenu_tableConfirmation : gameMenu_tableConfirmation );
+        setActiveMenu(gameMenu_tableConfirmation);
 
     }
 
@@ -294,6 +294,7 @@ public class MenuManager : MonoBehaviour
         {
             spg.ConfirmPlacement();
         }
+        ShowGameUI();
     }
 
     public void ShowGameMenu()

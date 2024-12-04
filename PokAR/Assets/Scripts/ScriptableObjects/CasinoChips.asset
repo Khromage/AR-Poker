@@ -23,6 +23,6 @@ MonoBehaviour:
   - value: 10
     material: {fileID: 2100000, guid: cc2a541e258da6142ba957d4d1eedb08, type: 2}
   - value: 25
-    material: {fileID: 2100000, guid: d8b3baa2427391b40a1a8f2b06618b6e, type: 2}
-  - value: 100
     material: {fileID: 2100000, guid: 955d7c227928ca449800c5d982bd87e2, type: 2}
+  - value: 100
+    material: {fileID: 2100000, guid: d8b3baa2427391b40a1a8f2b06618b6e, type: 2}

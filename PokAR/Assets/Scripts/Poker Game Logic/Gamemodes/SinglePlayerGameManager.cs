@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using UnityEngine.EventSystems;
 
 public class SinglePlayerGameManager : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class SinglePlayerGameManager : MonoBehaviour
     protected CasinoChips ChipAssets;
     [SerializeField]
     protected PlayingCards CardAssets;
+    [SerializeField]
+    protected PlayerAvatars AvatarAssets;
 
     [SerializeField]
     private string difficulty;
@@ -83,7 +86,6 @@ public class SinglePlayerGameManager : MonoBehaviour
             ConfirmPlacement();
         }
 
-
         if (!gameSetupStarted)
         {
             bool inputDetected = false;
@@ -95,8 +97,13 @@ public class SinglePlayerGameManager : MonoBehaviour
                 if (touch.press.isPressed)
                 {
                     Vector2 touchPosition = touch.position.ReadValue();
-                    UpdatePlacementPose(touchPosition);
-                    inputDetected = true;
+
+                    // Check if the touch is over a UI element
+                    if (!IsPointerOverUIObject(touchPosition))
+                    {
+                        UpdatePlacementPose(touchPosition);
+                        inputDetected = true;
+                    }
                 }
             }
 
@@ -107,8 +114,13 @@ public class SinglePlayerGameManager : MonoBehaviour
                 if (mouse.leftButton.isPressed)
                 {
                     Vector2 mousePosition = mouse.position.ReadValue();
-                    UpdatePlacementPose(mousePosition);
-                    inputDetected = true;
+
+                    // Check if the mouse position is over a UI element
+                    if (!IsPointerOverUIObject(mousePosition))
+                    {
+                        UpdatePlacementPose(mousePosition);
+                        inputDetected = true;
+                    }
                 }
             }
 
@@ -120,6 +132,7 @@ public class SinglePlayerGameManager : MonoBehaviour
             }
         }
     }
+
 
     private void UpdatePlacementPose(Vector2 screenPosition)
     {
@@ -147,6 +160,18 @@ public class SinglePlayerGameManager : MonoBehaviour
             //sPlacementIndicatorActive = false;
         }
     }
+
+    private bool IsPointerOverUIObject(Vector2 screenPosition)
+    {
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current)
+        {
+            position = screenPosition
+        };
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+        return results.Count > 0;
+    }
+
 
     public void ConfirmPlacement()
     {

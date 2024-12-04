@@ -5,6 +5,8 @@ using System;
 using UnityEngine.UI;
 using TMPro;
 
+using Fusion;
+
 public class MenuManager : MonoBehaviour
 {
 

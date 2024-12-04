@@ -15,6 +15,8 @@ public class SinglePlayerGameManager : MonoBehaviour
     protected CasinoChips ChipAssets;
     [SerializeField]
     protected PlayingCards CardAssets;
+    [SerializeField]
+    protected PlayerAvatars AvatarAssets;
 
     [SerializeField]
     private string difficulty;

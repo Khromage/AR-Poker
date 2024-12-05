@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bd153d88089be441803d0040997a3a6, type: 3}
   m_Name: PlayerAvatars
   m_EditorClassIdentifier: 
-  Prefab:
+  Avatars:
   - {fileID: 1793499937985081026, guid: 149b70b364be9b64d9e331169f8b5c28, type: 3}
   - {fileID: 4838970111423589469, guid: ca0dce541d7415341be48fdb82b4e9c7, type: 3}
   - {fileID: 6036331658564139559, guid: adb11d902b2436d428d60c75729665a6, type: 3}

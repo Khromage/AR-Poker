@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.EventSystems;
+using ExitGames.Client.Photon.StructWrapping;
 
 public class SinglePlayerGameManager : MonoBehaviour
 {
@@ -185,6 +186,7 @@ public class SinglePlayerGameManager : MonoBehaviour
 
             // Place the table at the confirmed location and start the game
             SetupTable(confirmedPosition, confirmedRotation);
+            SetupPlayers();
             SetupGame();
 
             // Disable further changes to the placement indicator
@@ -213,6 +215,28 @@ public class SinglePlayerGameManager : MonoBehaviour
         //SetupChips();
         SetupDeck();
         StartCoroutine(GameLoop());
+    }
+
+    private void SetupPlayers()
+    {
+        List<int> usedAvatarIndeces = new List<int>();
+        for(int player=0; player < numNPC; player++)
+        {
+            int avatarPrefabIndex = UnityEngine.Random.Range(0, AvatarAssets.Avatars.Length);
+            while(usedAvatarIndeces.Contains(avatarPrefabIndex))
+            {
+                avatarPrefabIndex = UnityEngine.Random.Range(0, AvatarAssets.Avatars.Length);
+            }
+
+
+            Transform spawnLocation = gameTable.transform.GetChild(player+1).GetChild(3).transform;
+
+            GameObject playerAvatar = Instantiate(AvatarAssets.Avatars[avatarPrefabIndex], spawnLocation.position, spawnLocation.rotation);
+
+            usedAvatarIndeces.Add(avatarPrefabIndex);
+        }
+
+
     }
 
     private void SetupTable(Vector3 position, Quaternion rotation)

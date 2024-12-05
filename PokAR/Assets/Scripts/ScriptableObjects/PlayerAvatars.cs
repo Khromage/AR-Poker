@@ -5,6 +5,6 @@ using UnityEngine;
 
 public class PlayerAvatars : ScriptableObject
 {
-    public GameObject[] Prefab;
+    public GameObject[] Avatars;
 }
 

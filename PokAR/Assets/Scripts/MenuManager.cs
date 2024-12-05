@@ -264,12 +264,20 @@ public class MenuManager : MonoBehaviour
         var multiPlayerManager = GameManager.Instance.CurrentGame.GetComponent<MultiPlayerGameManager>();
         multiPlayerManager.Initialize();
 
+        // starting game
+        multiPlayerManager.StartHost();
+
         // Display the generated code on the host UI
         ShowHostCodeView();
         Debug.Log($"Generated Lobby Code: {multiPlayerManager.GeneratedCode}");
         lobbyCodeOutput_portrait.SetText($"{multiPlayerManager.GeneratedCode}");
         lobbyCodeOutput_landscape.SetText($"{multiPlayerManager.GeneratedCode}");
-        // probably there's a smarter way to do this but whatever
+        // i'll clean this up
+
+    }
+
+    public void ViewMultiplayerGame()
+    {
 
     }
 

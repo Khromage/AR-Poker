@@ -1,16 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 using Fusion;
 using Fusion.Sockets;
 
 public class MultiPlayerGameManager : MonoBehaviour
 {
-    [SerializeField] private NetworkRunner networkRunner;
-    
+    [SerializeField] private NetworkRunner networkRunnerPrefab;
 
     public string GeneratedCode { get; private set; } // Holds the generated lobby code
+    private NetworkRunner runner;
 
     public void Initialize()
     {
@@ -36,25 +33,28 @@ public class MultiPlayerGameManager : MonoBehaviour
 
     public async void StartHost()
     {
-        if (networkRunner == null)
+        if (networkRunnerPrefab == null)
         {
-            Debug.LogError("NetworkRunner not assigned in Inspector!");
+            Debug.LogError("NetworkRunner prefab not assigned in Inspector!");
             return;
         }
 
-        Debug.Log("Starting Host...");
-        var result = await networkRunner.StartGame(new StartGameArgs()
+        // Instantiate the runner
+        runner = Instantiate(networkRunnerPrefab);
+        var startGameArgs = new StartGameArgs()
         {
             GameMode = GameMode.Host,
             SessionName = GeneratedCode,
-            //Scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex,
-            Scene = null,
-            PlayerCount = 4 // Maximum players, not inlcuidng host
-        });
+            Scene = null, // We assume you're already in the gameplay scene
+            PlayerCount = 4
+        };
+
+        Debug.Log("Starting Host...");
+        var result = await runner.StartGame(startGameArgs);
 
         if (result.Ok)
         {
-            Debug.Log("Host started successfully!");
+            Debug.Log("Host started successfully! Session Code: " + GeneratedCode);
         }
         else
         {
@@ -64,18 +64,22 @@ public class MultiPlayerGameManager : MonoBehaviour
 
     public async void JoinRoom(string lobbyCode)
     {
-        if (networkRunner == null)
+        if (networkRunnerPrefab == null)
         {
-            Debug.LogError("NetworkRunner not assigned in Inspector!");
+            Debug.LogError("NetworkRunner prefab not assigned in Inspector!");
             return;
         }
 
-        Debug.Log($"Joining Lobby: {lobbyCode}");
-        var result = await networkRunner.StartGame(new StartGameArgs()
+        // Instantiate the runner
+        runner = Instantiate(networkRunnerPrefab);
+        var startGameArgs = new StartGameArgs()
         {
             GameMode = GameMode.Client,
             SessionName = lobbyCode
-        });
+        };
+
+        Debug.Log($"Joining Lobby: {lobbyCode}");
+        var result = await runner.StartGame(startGameArgs);
 
         if (result.Ok)
         {

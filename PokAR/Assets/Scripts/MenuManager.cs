@@ -249,6 +249,32 @@ public class MenuManager : MonoBehaviour
         //ShowGameUI();
     }
 
+    public void StartMultiplayerHost()
+    {
+        GameManager.Instance.CurrentGame = Instantiate(GameManager.Instance.MultiPlayerPrefab);
+        var multiPlayerManager = GameManager.Instance.CurrentGame.GetComponent<MultiPlayerGameManager>();
+        multiPlayerManager.Initialize();
+
+        // Display the generated code on the host UI
+        ShowHostCodeView();
+        Debug.Log($"Generated Lobby Code: {multiPlayerManager.GeneratedCode}");
+    }
+
+    public void JoinMultiplayerGame(InputField inputField)
+    {
+        string lobbyCode = inputField.text.ToUpper();
+        if (lobbyCode.Length == 4)
+        {
+            Debug.Log($"Attempting to join lobby: {lobbyCode}");
+            var multiPlayerManager = GameManager.Instance.CurrentGame.GetComponent<MultiPlayerGameManager>();
+            multiPlayerManager.JoinRoom(lobbyCode);
+        }
+        else
+        {
+            Debug.LogError("Invalid lobby code entered!");
+        }
+    }
+
     public void EndGame()
     {
         Debug.Log("Game Ended");

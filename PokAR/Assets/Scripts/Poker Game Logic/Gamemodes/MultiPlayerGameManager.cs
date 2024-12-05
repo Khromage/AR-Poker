@@ -8,6 +8,8 @@ using Fusion.Sockets;
 public class MultiPlayerGameManager : MonoBehaviour
 {
     [SerializeField] private NetworkRunner networkRunner;
+    
+
     public string GeneratedCode { get; private set; } // Holds the generated lobby code
 
     public void Initialize()

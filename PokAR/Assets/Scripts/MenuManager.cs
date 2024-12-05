@@ -23,6 +23,7 @@ public class MenuManager : MonoBehaviour
     public GameObject multiPlayerMenu_portrait;
     public GameObject multiPlayerHostCodeView_portrait;
     public GameObject multiplayerJoinRoomView_portrait;
+    public GameObject multiplayerHostLobbyStart_portrait;
 
     //landscape game objects
     public GameObject mainMenu_landscape;
@@ -34,6 +35,7 @@ public class MenuManager : MonoBehaviour
     public GameObject multiPlayerMenu_landscape;
     public GameObject multiPlayerHostCodeView_landscape;
     public GameObject multiplayerJoinRoomView_landscape;
+    public GameObject multiplayerHostLobbyStart_landscape;
 
 
     // gameplay UI
@@ -42,6 +44,8 @@ public class MenuManager : MonoBehaviour
     public GameObject gameMenu_portrait;
     public GameObject gameMenu_landscape;
     public GameObject gameMenu_tableConfirmation;
+    public TMP_Text lobbyCodeOutput_portrait;
+    public TMP_Text lobbyCodeOutput_landscape;
 
     // tracking
     private GameObject currentMenu;
@@ -202,6 +206,11 @@ public class MenuManager : MonoBehaviour
         setActiveMenu(isPortrait ? multiplayerJoinRoomView_portrait : multiplayerJoinRoomView_landscape);
     }
 
+    public void ShowHostLobbyStartView()
+    {
+        setActiveMenu(isPortrait ? multiplayerHostLobbyStart_portrait : multiplayerHostLobbyStart_landscape);
+    }
+
     private void setActiveMenu(GameObject newMenu)
     {
         if (currentMenu != null)
@@ -258,9 +267,13 @@ public class MenuManager : MonoBehaviour
         // Display the generated code on the host UI
         ShowHostCodeView();
         Debug.Log($"Generated Lobby Code: {multiPlayerManager.GeneratedCode}");
+        lobbyCodeOutput_portrait.SetText($"{multiPlayerManager.GeneratedCode}");
+        lobbyCodeOutput_landscape.SetText($"{multiPlayerManager.GeneratedCode}");
+        // probably there's a smarter way to do this but whatever
+
     }
 
-    public void JoinMultiplayerGame(InputField inputField)
+    public void JoinMultiplayerGame(TMP_InputField inputField)
     {
         string lobbyCode = inputField.text.ToUpper();
         if (lobbyCode.Length == 4)
@@ -294,7 +307,7 @@ public class MenuManager : MonoBehaviour
         ShowMainMenu();
     }
 
-    public void ShowGameUI()
+    public void ShowGameUI() // shows game UI
     {
         gameMenu_tableConfirmation.SetActive(false);
         if(isPortrait)

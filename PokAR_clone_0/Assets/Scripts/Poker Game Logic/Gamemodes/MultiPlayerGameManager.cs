@@ -5,6 +5,7 @@ using Fusion.Sockets;
 public class MultiPlayerGameManager : MonoBehaviour
 {
     [SerializeField] private NetworkRunner networkRunnerPrefab;
+    [SerializeField] private NetworkObject buttonPrefab;
 
     public string GeneratedCode { get; private set; } // Holds the generated lobby code
     private NetworkRunner runner;
@@ -55,6 +56,9 @@ public class MultiPlayerGameManager : MonoBehaviour
         if (result.Ok)
         {
             Debug.Log("Host started successfully! Session Code: " + GeneratedCode);
+
+            //SPAWNING OBJECTS
+            SpawnButton();
         }
         else
         {
@@ -89,5 +93,14 @@ public class MultiPlayerGameManager : MonoBehaviour
         {
             Debug.LogError($"Failed to join lobby: {result.ShutdownReason}");
         }
+    }
+
+    private void SpawnButton()
+    {
+        Vector3 buttonPos = new Vector3(0, 0.5f, 1);
+        Quaternion buttonRot = Quaternion.identity;
+            // Spawn the button
+        NetworkObject spawnedButton = runner.Spawn(buttonPrefab, buttonPos, buttonRot, runner.LocalPlayer);
+        Debug.Log("Button spawned by host.");
     }
 }

@@ -46,3 +46,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networkRunnerPrefab: {fileID: 7482678588316968134, guid: 6c23339c81483094eb706142cd2bea07,
     type: 3}
+  buttonPrefab: {fileID: 3748235202594392365, guid: def5bb952c7cce54ab1971c721211e85,
+    type: 3}

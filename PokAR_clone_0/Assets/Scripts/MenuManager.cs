@@ -24,6 +24,7 @@ public class MenuManager : MonoBehaviour
     public GameObject multiPlayerHostCodeView_portrait;
     public GameObject multiplayerJoinRoomView_portrait;
     public GameObject multiplayerHostLobbyStart_portrait;
+    public GameObject settings_portrait;
 
     //landscape game objects
     public GameObject mainMenu_landscape;
@@ -36,6 +37,7 @@ public class MenuManager : MonoBehaviour
     public GameObject multiPlayerHostCodeView_landscape;
     public GameObject multiplayerJoinRoomView_landscape;
     public GameObject multiplayerHostLobbyStart_landscape;
+    public GameObject settings_landscape;
 
 
     // gameplay UI
@@ -151,6 +153,10 @@ public class MenuManager : MonoBehaviour
             {
                 ShowJoinRoomView();
             }
+            else if (currentMenu == settings_portrait || currentMenu == settings_landscape)
+            {
+                ShowSettings();
+            }
         }
     }
 
@@ -191,6 +197,10 @@ public class MenuManager : MonoBehaviour
         setActiveMenu(isPortrait ? quitConfirmation_portrait : quitConfirmation_landscape);
     }
 
+    public void ShowSettings()
+    {
+        setActiveMenu(isPortrait ? settings_portrait : settings_landscape);
+    }
     public void ShowMultiPlayerMenu()
     {
         setActiveMenu(isPortrait ? multiPlayerMenu_portrait : multiPlayerMenu_landscape);
@@ -320,6 +330,7 @@ public class MenuManager : MonoBehaviour
     public void ShowGameUI() // shows game UI
     {
         gameMenu_tableConfirmation.SetActive(false);
+        currentMenu.SetActive(false);
         if(isPortrait)
         {
             gameplay_landscape.SetActive(false);

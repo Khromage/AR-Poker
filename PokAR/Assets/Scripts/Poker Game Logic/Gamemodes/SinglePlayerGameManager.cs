@@ -21,8 +21,15 @@ public class SinglePlayerGameManager : MonoBehaviour
 
     [SerializeField]
     private string difficulty;
+    private int startingBalance;
+    private int NPCstartingBalance;
+
+
     [SerializeField]
     private int numNPC;
+
+    [SerializeField]
+    private Player[] Players;
 
     private List<GameObject> activeCards = new List<GameObject>();
     private GameObject gameTable;
@@ -55,10 +62,36 @@ public class SinglePlayerGameManager : MonoBehaviour
         public string Suit;
         public int Value;
     }
+    [System.Serializable]
+    public struct Player
+    {
+        public bool isNPC;
+        public int Balance;
+        public Card[] Hand;
+
+        public Player(bool isnpc, int balance)
+        {
+            isNPC = isnpc;
+            Balance = balance;
+            Hand = new Card[2]; // Initialize array with size 2
+        }
+    }
 
     public void Initialize(string gameDifficulty, int npcCount)
     {
         difficulty = gameDifficulty;
+        switch(difficulty)
+        {
+            case "Beginner":
+                startingBalance = 120;
+                break;
+            case "Gambler":
+                startingBalance = 100;
+                break;
+            case "Pro":
+                startingBalance = 80;
+                break;    
+        }
         numNPC = npcCount;
         npcCards = new List<GameObject>[numNPC];
         for (int i = 0; i < numNPC; i++)
@@ -134,7 +167,6 @@ public class SinglePlayerGameManager : MonoBehaviour
         }
     }
 
-
     private void UpdatePlacementPose(Vector2 screenPosition)
     {
         if (arRaycastManager.Raycast(screenPosition, hits, TrackableType.Planes))
@@ -173,7 +205,6 @@ public class SinglePlayerGameManager : MonoBehaviour
         return results.Count > 0;
     }
 
-
     public void ConfirmPlacement()
     {
         Debug.Log("CONFIRMINGGGGGGGGGG");
@@ -186,7 +217,6 @@ public class SinglePlayerGameManager : MonoBehaviour
 
             // Place the table at the confirmed location and start the game
             SetupTable(confirmedPosition, confirmedRotation);
-            SetupPlayers();
             SetupGame();
 
             // Disable further changes to the placement indicator
@@ -212,15 +242,28 @@ public class SinglePlayerGameManager : MonoBehaviour
     private void SetupGame()
     {
         // Note: Removed redundant call to SetupTable since it's already called in ConfirmPlacement()
-        //SetupChips();
         SetupDeck();
+        SetupPlayers();
+        //SetupChips();
         StartCoroutine(GameLoop());
     }
 
     private void SetupPlayers()
     {
+        Players = new Player[numNPC+1];
+
+        // User Player
+        Players[0] = new Player(false, startingBalance);
+        // NPC Players
+        for(int i=1; i<=numNPC; i++)
+        {
+            Players[i] = new Player(true, NPCstartingBalance);
+        }
+
+        DealCards();
+        
         List<int> usedAvatarIndeces = new List<int>();
-        for(int player=0; player < numNPC; player++)
+        for(int player=0; player < Players.Length; player++)
         {
             int avatarPrefabIndex = UnityEngine.Random.Range(0, AvatarAssets.Avatars.Length);
             while(usedAvatarIndeces.Contains(avatarPrefabIndex))
@@ -282,16 +325,21 @@ public class SinglePlayerGameManager : MonoBehaviour
             GameObject cardObj = Instantiate(CardAssets.Prefab, gameObject.transform);
             cardObj.transform.GetChild(0).GetComponent<Renderer>().material = GetCardMaterial(card);
             cardObj.transform.GetChild(1).GetComponent<Renderer>().material = CardBackMaterial;
-            playerCards.Add(cardObj);
+            
+            // Update Players Array
+            Players[0].Hand[i] = card;
+            
+            //playerCards.Add(cardObj);
             activeCards.Add(cardObj);
 
+            // Set card on tabe in player's position
             cardObj.transform.localScale /= 2;
             cardObj.transform.position = gameTable.transform.GetChild(1).GetChild(0).GetChild(i).transform.position;
             cardObj.transform.rotation = gameTable.transform.GetChild(1).GetChild(0).GetChild(i).transform.rotation;
         }
 
         // Deal two cards to each NPC
-        for (int npc = 0; npc < numNPC; npc++)
+        for (int npc = 1; npc < Players.Length; npc++)
         {
             for (int i = 0; i < 2; i++)
             {
@@ -299,12 +347,17 @@ public class SinglePlayerGameManager : MonoBehaviour
                 GameObject cardObj = Instantiate(CardAssets.Prefab, gameObject.transform);
                 cardObj.transform.GetChild(0).GetComponent<Renderer>().material = GetCardMaterial(card);
                 cardObj.transform.GetChild(1).GetComponent<Renderer>().material = CardBackMaterial;
-                npcCards[npc].Add(cardObj);
+                
+                // Update Players Array
+                Players[npc].Hand[i] = card;
+
+                //npcCards[npc].Add(cardObj);
                 activeCards.Add(cardObj);
 
+                // Set card on tabe in player's position
                 cardObj.transform.localScale /= 2;
-                cardObj.transform.position = gameTable.transform.GetChild(npc+2).GetChild(0).GetChild(i).transform.position;
-                cardObj.transform.rotation = gameTable.transform.GetChild(npc+2).GetChild(0).GetChild(i).transform.rotation;
+                cardObj.transform.position = gameTable.transform.GetChild(npc+1).GetChild(0).GetChild(i).transform.position;
+                cardObj.transform.rotation = gameTable.transform.GetChild(npc+1).GetChild(0).GetChild(i).transform.rotation;
             }
         }
         Debug.Log("Cards have been dealt.");
@@ -415,8 +468,8 @@ public class SinglePlayerGameManager : MonoBehaviour
     private IEnumerator GameLoop()
     {
         // Pre-flop phase
-        DealCards();
-        yield return new WaitForSeconds(2f);
+        //DealCards(); MOVED LINE TO BE CALLED IN SetupPlayers();
+        //yield return new WaitForSeconds(2f);
 
         // Flop phase - deal three community cards
         DealCommunityCards(3);

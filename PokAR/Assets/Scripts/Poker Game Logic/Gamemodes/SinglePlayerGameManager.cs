@@ -22,7 +22,7 @@ public class SinglePlayerGameManager : MonoBehaviour
     [SerializeField]
     private string difficulty;
     private int startingBalance;
-    private int NPCstartingBalance;
+    private int NPCstartingBalance = 100;
 
 
     [SerializeField]
@@ -30,6 +30,9 @@ public class SinglePlayerGameManager : MonoBehaviour
 
     [SerializeField]
     private Player[] Players;
+
+    [SerializeField]
+    private GameObject[] PlayerSlots;
 
     private List<GameObject> activeCards = new List<GameObject>();
     private GameObject gameTable;
@@ -63,17 +66,27 @@ public class SinglePlayerGameManager : MonoBehaviour
         public int Value;
     }
     [System.Serializable]
+    public struct Chip
+    {
+        public GameObject GO;
+        public int Value;
+    }
+    [System.Serializable]
     public struct Player
     {
         public bool isNPC;
         public int Balance;
         public Card[] Hand;
 
+        public int[] NumChips;
+
         public Player(bool isnpc, int balance)
         {
             isNPC = isnpc;
             Balance = balance;
             Hand = new Card[2]; // Initialize array with size 2
+            // NO 100 or 25 VALUE CHIPS. FOR THAT, THIS NEEDS TO BE 5. Adjust SetupChips() accordingly
+            NumChips = new int[4];
         }
     }
 
@@ -244,7 +257,7 @@ public class SinglePlayerGameManager : MonoBehaviour
         // Note: Removed redundant call to SetupTable since it's already called in ConfirmPlacement()
         SetupDeck();
         SetupPlayers();
-        //SetupChips();
+        SetupChips();
         StartCoroutine(GameLoop());
     }
 
@@ -258,6 +271,15 @@ public class SinglePlayerGameManager : MonoBehaviour
         for(int i=1; i<=numNPC; i++)
         {
             Players[i] = new Player(true, NPCstartingBalance);
+        }
+
+        // Setup Player Slots
+        PlayerSlots = new GameObject[Players.Length];
+        Debug.Log(PlayerSlots.Length);
+        // slot 1 to 5 (index 0 to 4 of PlayerSlots array)
+        for(int i=0; i<PlayerSlots.Length-1; i++)
+        {
+            PlayerSlots[i] = gameTable.transform.GetChild(i+1).gameObject;
         }
 
         DealCards();
@@ -284,17 +306,82 @@ public class SinglePlayerGameManager : MonoBehaviour
 
     private void SetupTable(Vector3 position, Quaternion rotation)
     {
+        // Setup Table
         gameTable = Instantiate(TableAssets.Tables[0].Prefab, position, rotation, gameObject.transform);
+
         Debug.Log("Table has been set up.");
     }
 
     private void SetupChips()
     {
-        foreach (Chip chip in ChipAssets.Chips)
+        for(int p=0; p<Players.Length-1; p++)
         {
-            GameObject chipObj = Instantiate(ChipAssets.Prefab, gameObject.transform);
-            chipObj.GetComponent<Renderer>().material = chip.material;
-            chips.Add(chipObj);
+            int[] numEachChip = new int[3];
+            switch(Players[p].Balance)
+            {
+                case 80:
+                    numEachChip[0] = 10;
+                    numEachChip[1] = 6;
+                    numEachChip[2] = 4;
+                    break;
+                case 100:
+                    numEachChip[0] = 10;
+                    numEachChip[1] = 8;
+                    numEachChip[2] = 5;
+                    break;
+                case 120:
+                    numEachChip[0] = 10;
+                    numEachChip[1] = 10;
+                    numEachChip[2] = 6;
+                    break;
+            }
+            
+            int stackHeight = 0;
+            Transform stackSlot = PlayerSlots[p].transform.GetChild(1).GetChild(0).transform;
+
+            // 1 value chips
+            for(int i=0; i<numEachChip[0]; i++)
+            {
+                GameObject chipGO = Instantiate(ChipAssets.Prefab, stackSlot.position, stackSlot.rotation);
+                //Debug.Log("Made ChipGO: "+chipGO);
+                chipGO.transform.GetChild(0).GetComponent<Renderer>().material = ChipAssets.Chips[1].material;
+                // add chip to player chip array
+                //Chip chip = new Chip {GO = chipGO, Value = 1};
+                chipGO.transform.position = stackSlot.position + Vector3.up * (0.00325f * stackHeight);
+                chipGO.transform.Rotate(0.0f, 20.0f*i, 0.0f);
+                stackHeight += 1;
+                Players[p].NumChips[0] += 1;
+            }
+            // 5 value chips
+            stackHeight = 0;
+            stackSlot = PlayerSlots[p].transform.GetChild(1).GetChild(1).transform;
+            for(int i=0; i<numEachChip[1]; i++)
+            {
+                GameObject chipGO = Instantiate(ChipAssets.Prefab, stackSlot.position, stackSlot.rotation);
+                //Debug.Log("Made ChipGO: "+chipGO);
+                chipGO.transform.GetChild(0).GetComponent<Renderer>().material = ChipAssets.Chips[2].material;
+                // add chip to player chip array
+                //Chip chip = new Chip {GO = chipGO, Value = 1};
+                chipGO.transform.position = stackSlot.position + Vector3.up * (0.00325f * stackHeight);
+                chipGO.transform.Rotate(0.0f, 20.0f*i, 0.0f);
+                stackHeight += 1;
+                Players[p].NumChips[1] += 1;
+            }
+            // 10 value chips
+            stackHeight = 0;
+            stackSlot = PlayerSlots[p].transform.GetChild(1).GetChild(2).transform;
+            for(int i=0; i<numEachChip[2]; i++)
+            {
+                GameObject chipGO = Instantiate(ChipAssets.Prefab, stackSlot.position, stackSlot.rotation);
+                //Debug.Log("Made ChipGO: "+chipGO);
+                chipGO.transform.GetChild(0).GetComponent<Renderer>().material = ChipAssets.Chips[3].material;
+                // add chip to player chip array
+                //Chip chip = new Chip {GO = chipGO, Value = 1};
+                chipGO.transform.position = stackSlot.position + Vector3.up * (0.00325f * stackHeight);
+                chipGO.transform.Rotate(0.0f, 20.0f*i, 0.0f);
+                stackHeight += 1;
+                Players[p].NumChips[2] += 1;
+            }
         }
         Debug.Log("Chips have been set up.");
     }

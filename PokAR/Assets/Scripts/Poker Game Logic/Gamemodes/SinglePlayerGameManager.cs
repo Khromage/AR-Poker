@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.EventSystems;
-using ExitGames.Client.Photon.StructWrapping;
+using Unity.VisualScripting.FullSerializer.Internal;
 
 public class SinglePlayerGameManager : MonoBehaviour
 {
@@ -24,13 +24,10 @@ public class SinglePlayerGameManager : MonoBehaviour
     private int startingBalance;
     private int NPCstartingBalance = 100;
 
-
     [SerializeField]
     private int numNPC;
-
     [SerializeField]
     private Player[] Players;
-
     [SerializeField]
     private GameObject[] PlayerSlots;
 
@@ -39,6 +36,8 @@ public class SinglePlayerGameManager : MonoBehaviour
     private List<GameObject> chips = new List<GameObject>();
 
     private List<GameObject> communityCards = new List<GameObject>();
+    private List<Card> communityCardStructs = new List<Card>();
+
     private List<GameObject> playerCards = new List<GameObject>();
     private List<GameObject>[] npcCards;
 
@@ -59,34 +58,52 @@ public class SinglePlayerGameManager : MonoBehaviour
     private Vector3 confirmedPosition;
     private Quaternion confirmedRotation;
 
+    // Betting and turn logic
+    private int pot = 0;
+    private int currentBet = 0;
+    private bool[] foldedPlayers;
+    private bool[] activePlayers;
+    private int smallBlind = 5;
+    private int bigBlind = 10;
+    private int dealerIndex = 0;
+    private int smallBlindIndex;
+    private int bigBlindIndex;
+    private int[] currentBets;
+
     [System.Serializable]
     public struct Card
     {
-        public string Suit;
-        public int Value;
+        public string Suit; // "Hearts", "Diamonds", "Clubs", "Spades"
+        public int Value;   // 1 through 13, where 1=Ace, 11=Jack, 12=Queen, 13=King
     }
+
     [System.Serializable]
     public struct Chip
     {
         public GameObject GO;
         public int Value;
     }
+
     [System.Serializable]
     public struct Player
     {
         public bool isNPC;
         public int Balance;
         public Card[] Hand;
-
+        public List<GameObject>[] Chips;
         public int[] NumChips;
 
         public Player(bool isnpc, int balance)
         {
             isNPC = isnpc;
             Balance = balance;
-            Hand = new Card[2]; // Initialize array with size 2
-            // NO 100 or 25 VALUE CHIPS. FOR THAT, THIS NEEDS TO BE 5. Adjust SetupChips() accordingly
+            Hand = new Card[2]; 
             NumChips = new int[4];
+            Chips = new List<GameObject>[4];
+            for (int i = 0; i < 4; i++)
+            {
+                Chips[i] = new List<GameObject>();
+            }
         }
     }
 
@@ -118,16 +135,12 @@ public class SinglePlayerGameManager : MonoBehaviour
     {
         Debug.Log("Single Player Manager WAS CREATED & START RAN");
         arRaycastManager = FindObjectOfType<ARRaycastManager>();
-
-        // Instantiate the placement indicator and deactivate it initially
         placementIndicator = Instantiate(placementIndicatorPrefab, gameObject.transform);
         isPlacementIndicatorActive = true;
-        //placementIndicator.SetActive(false);
     }
 
     void Update()
     {
-        // replaced with button
         if (Keyboard.current.cKey.wasPressedThisFrame)
         {
             ConfirmPlacement();
@@ -144,8 +157,6 @@ public class SinglePlayerGameManager : MonoBehaviour
                 if (touch.press.isPressed)
                 {
                     Vector2 touchPosition = touch.position.ReadValue();
-
-                    // Check if the touch is over a UI element
                     if (!IsPointerOverUIObject(touchPosition))
                     {
                         UpdatePlacementPose(touchPosition);
@@ -161,21 +172,12 @@ public class SinglePlayerGameManager : MonoBehaviour
                 if (mouse.leftButton.isPressed)
                 {
                     Vector2 mousePosition = mouse.position.ReadValue();
-
-                    // Check if the mouse position is over a UI element
                     if (!IsPointerOverUIObject(mousePosition))
                     {
                         UpdatePlacementPose(mousePosition);
                         inputDetected = true;
                     }
                 }
-            }
-
-            if (!inputDetected)
-            {
-                // Deactivate the placement indicator if there's no input
-                //placementIndicator.SetActive(false);
-                //isPlacementIndicatorActive = false;
             }
         }
     }
@@ -185,25 +187,15 @@ public class SinglePlayerGameManager : MonoBehaviour
         if (arRaycastManager.Raycast(screenPosition, hits, TrackableType.Planes))
         {
             Pose hitPose = hits[0].pose;
-
-            // Activate the placement indicator
             if (!placementIndicator.activeInHierarchy)
             {
                 placementIndicator.SetActive(true);
             }
 
             isPlacementIndicatorActive = true;
-
-            // Movement smoothing
             float smoothingSpeed = 10f;
             placementIndicator.transform.position = Vector3.Lerp(placementIndicator.transform.position, hitPose.position, Time.deltaTime * smoothingSpeed);
             placementIndicator.transform.rotation = Quaternion.Lerp(placementIndicator.transform.rotation, hitPose.rotation, Time.deltaTime * smoothingSpeed);
-        }
-        else
-        {
-            // Deactivate the placement indicator if no valid plane is detected
-            //placementIndicator.SetActive(false);
-            //sPlacementIndicatorActive = false;
         }
     }
 
@@ -220,41 +212,20 @@ public class SinglePlayerGameManager : MonoBehaviour
 
     public void ConfirmPlacement()
     {
-        Debug.Log("CONFIRMINGGGGGGGGGG");
         if (isPlacementIndicatorActive)
         {
-            Debug.Log("GOING IN");
-            // Store the confirmed position and rotation
             confirmedPosition = placementIndicator.transform.position;
             confirmedRotation = placementIndicator.transform.rotation;
 
-            // Place the table at the confirmed location and start the game
             SetupTable(confirmedPosition, confirmedRotation);
             SetupGame();
-
-            // Disable further changes to the placement indicator
             placementIndicator.SetActive(false);
             gameSetupStarted = true;
-
-                    // Call ShowGameUI from the MenuManager
-                    /*
-            MenuManager menuManager = FindObjectOfType<MenuManager>();
-            if (menuManager != null)
-            {
-                Debug.Log("yo is this workign");
-                menuManager.ShowGameUI();
-            }
-            else
-            {
-                Debug.Log("yup, not working");
-            }
-            */
         }
     }
 
     private void SetupGame()
     {
-        // Note: Removed redundant call to SetupTable since it's already called in ConfirmPlacement()
         SetupDeck();
         SetupPlayers();
         SetupChips();
@@ -264,19 +235,13 @@ public class SinglePlayerGameManager : MonoBehaviour
     private void SetupPlayers()
     {
         Players = new Player[numNPC+1];
-
-        // User Player
         Players[0] = new Player(false, startingBalance);
-        // NPC Players
         for(int i=1; i<=numNPC; i++)
         {
             Players[i] = new Player(true, NPCstartingBalance);
         }
 
-        // Setup Player Slots
         PlayerSlots = new GameObject[Players.Length];
-        Debug.Log(PlayerSlots.Length);
-        // slot 1 to 5 (index 0 to 4 of PlayerSlots array)
         for(int i=0; i<PlayerSlots.Length-1; i++)
         {
             PlayerSlots[i] = gameTable.transform.GetChild(i+1).gameObject;
@@ -284,31 +249,24 @@ public class SinglePlayerGameManager : MonoBehaviour
 
         DealCards();
         
-        List<int> usedAvatarIndeces = new List<int>();
+        List<int> usedAvatarIndices = new List<int>();
         for(int player=0; player < Players.Length; player++)
         {
             int avatarPrefabIndex = UnityEngine.Random.Range(0, AvatarAssets.Avatars.Length);
-            while(usedAvatarIndeces.Contains(avatarPrefabIndex))
+            while(usedAvatarIndices.Contains(avatarPrefabIndex))
             {
                 avatarPrefabIndex = UnityEngine.Random.Range(0, AvatarAssets.Avatars.Length);
             }
 
-
             Transform spawnLocation = gameTable.transform.GetChild(player+1).GetChild(3).transform;
-
             GameObject playerAvatar = Instantiate(AvatarAssets.Avatars[avatarPrefabIndex], spawnLocation.position, spawnLocation.rotation);
-
-            usedAvatarIndeces.Add(avatarPrefabIndex);
+            usedAvatarIndices.Add(avatarPrefabIndex);
         }
-
-
     }
 
     private void SetupTable(Vector3 position, Quaternion rotation)
     {
-        // Setup Table
         gameTable = Instantiate(TableAssets.Tables[0].Prefab, position, rotation, gameObject.transform);
-
         Debug.Log("Table has been set up.");
     }
 
@@ -320,66 +278,56 @@ public class SinglePlayerGameManager : MonoBehaviour
             switch(Players[p].Balance)
             {
                 case 80:
-                    numEachChip[0] = 10;
-                    numEachChip[1] = 6;
-                    numEachChip[2] = 4;
+                    numEachChip[0] = 10; numEachChip[1] = 6; numEachChip[2] = 4;
                     break;
                 case 100:
-                    numEachChip[0] = 10;
-                    numEachChip[1] = 8;
-                    numEachChip[2] = 5;
+                    numEachChip[0] = 10; numEachChip[1] = 8; numEachChip[2] = 5;
                     break;
                 case 120:
-                    numEachChip[0] = 10;
-                    numEachChip[1] = 10;
-                    numEachChip[2] = 6;
+                    numEachChip[0] = 10; numEachChip[1] = 10; numEachChip[2] = 6;
                     break;
             }
             
             int stackHeight = 0;
             Transform stackSlot = PlayerSlots[p].transform.GetChild(1).GetChild(0).transform;
 
-            // 1 value chips
+            // 1-value chips
             for(int i=0; i<numEachChip[0]; i++)
             {
                 GameObject chipGO = Instantiate(ChipAssets.Prefab, stackSlot.position, stackSlot.rotation);
-                //Debug.Log("Made ChipGO: "+chipGO);
                 chipGO.transform.GetChild(0).GetComponent<Renderer>().material = ChipAssets.Chips[1].material;
-                // add chip to player chip array
-                //Chip chip = new Chip {GO = chipGO, Value = 1};
+                Players[p].Chips[0].Add(chipGO);
                 chipGO.transform.position = stackSlot.position + Vector3.up * (0.00325f * stackHeight);
                 chipGO.transform.Rotate(0.0f, 20.0f*i, 0.0f);
-                stackHeight += 1;
+                stackHeight = Players[p].Chips[0].Count;
                 Players[p].NumChips[0] += 1;
             }
-            // 5 value chips
+
+            // 5-value chips
             stackHeight = 0;
             stackSlot = PlayerSlots[p].transform.GetChild(1).GetChild(1).transform;
             for(int i=0; i<numEachChip[1]; i++)
             {
                 GameObject chipGO = Instantiate(ChipAssets.Prefab, stackSlot.position, stackSlot.rotation);
-                //Debug.Log("Made ChipGO: "+chipGO);
                 chipGO.transform.GetChild(0).GetComponent<Renderer>().material = ChipAssets.Chips[2].material;
-                // add chip to player chip array
-                //Chip chip = new Chip {GO = chipGO, Value = 1};
+                Players[p].Chips[1].Add(chipGO);
                 chipGO.transform.position = stackSlot.position + Vector3.up * (0.00325f * stackHeight);
                 chipGO.transform.Rotate(0.0f, 20.0f*i, 0.0f);
-                stackHeight += 1;
+                stackHeight = Players[p].Chips[1].Count;
                 Players[p].NumChips[1] += 1;
             }
-            // 10 value chips
+
+            // 10-value chips
             stackHeight = 0;
             stackSlot = PlayerSlots[p].transform.GetChild(1).GetChild(2).transform;
             for(int i=0; i<numEachChip[2]; i++)
             {
                 GameObject chipGO = Instantiate(ChipAssets.Prefab, stackSlot.position, stackSlot.rotation);
-                //Debug.Log("Made ChipGO: "+chipGO);
                 chipGO.transform.GetChild(0).GetComponent<Renderer>().material = ChipAssets.Chips[3].material;
-                // add chip to player chip array
-                //Chip chip = new Chip {GO = chipGO, Value = 1};
+                Players[p].Chips[2].Add(chipGO);
                 chipGO.transform.position = stackSlot.position + Vector3.up * (0.00325f * stackHeight);
                 chipGO.transform.Rotate(0.0f, 20.0f*i, 0.0f);
-                stackHeight += 1;
+                stackHeight = Players[p].Chips[2].Count;
                 Players[p].NumChips[2] += 1;
             }
         }
@@ -388,7 +336,6 @@ public class SinglePlayerGameManager : MonoBehaviour
 
     private void SetupDeck()
     {
-        // Random int is exclusive range, so 0-3
         CardBackMaterial = CardAssets.Backs[UnityEngine.Random.Range(0, 3)];
         string[] suits = { CardAssets.Suits[0].Name, CardAssets.Suits[1].Name, CardAssets.Suits[2].Name, CardAssets.Suits[3].Name };
         for (int i = 0; i < suits.Length; i++)
@@ -402,30 +349,24 @@ public class SinglePlayerGameManager : MonoBehaviour
         Debug.Log("Deck has been initialized.");
     }
 
-    // Deal cards to players
     private void DealCards()
     {
-        // Deal two cards to the player
+        // Player (index 0)
         for (int i = 0; i < 2; i++)
         {
             Card card = DrawCard();
             GameObject cardObj = Instantiate(CardAssets.Prefab, gameObject.transform);
             cardObj.transform.GetChild(0).GetComponent<Renderer>().material = GetCardMaterial(card);
             cardObj.transform.GetChild(1).GetComponent<Renderer>().material = CardBackMaterial;
-            
-            // Update Players Array
             Players[0].Hand[i] = card;
-            
-            //playerCards.Add(cardObj);
             activeCards.Add(cardObj);
 
-            // Set card on tabe in player's position
             cardObj.transform.localScale /= 2;
             cardObj.transform.position = gameTable.transform.GetChild(1).GetChild(0).GetChild(i).transform.position;
             cardObj.transform.rotation = gameTable.transform.GetChild(1).GetChild(0).GetChild(i).transform.rotation;
         }
 
-        // Deal two cards to each NPC
+        // NPCs
         for (int npc = 1; npc < Players.Length; npc++)
         {
             for (int i = 0; i < 2; i++)
@@ -434,14 +375,9 @@ public class SinglePlayerGameManager : MonoBehaviour
                 GameObject cardObj = Instantiate(CardAssets.Prefab, gameObject.transform);
                 cardObj.transform.GetChild(0).GetComponent<Renderer>().material = GetCardMaterial(card);
                 cardObj.transform.GetChild(1).GetComponent<Renderer>().material = CardBackMaterial;
-                
-                // Update Players Array
                 Players[npc].Hand[i] = card;
-
-                //npcCards[npc].Add(cardObj);
                 activeCards.Add(cardObj);
 
-                // Set card on tabe in player's position
                 cardObj.transform.localScale /= 2;
                 cardObj.transform.position = gameTable.transform.GetChild(npc+1).GetChild(0).GetChild(i).transform.position;
                 cardObj.transform.rotation = gameTable.transform.GetChild(npc+1).GetChild(0).GetChild(i).transform.rotation;
@@ -450,7 +386,6 @@ public class SinglePlayerGameManager : MonoBehaviour
         Debug.Log("Cards have been dealt.");
     }
 
-    // Set up community cards (the flop, turn, and river)
     private void DealCommunityCards(int numberOfCards)
     {
         for (int i = 0; i < numberOfCards; i++)
@@ -461,11 +396,17 @@ public class SinglePlayerGameManager : MonoBehaviour
             cardObj.transform.GetChild(1).GetComponent<Renderer>().material = CardBackMaterial;
             communityCards.Add(cardObj);
             activeCards.Add(cardObj);
+
+            cardObj.transform.localScale /= 2;
+            cardObj.transform.position = gameTable.transform.GetChild(0).GetChild(communityCardStructs.Count).position;
+            cardObj.transform.rotation = gameTable.transform.GetChild(0).GetChild(communityCardStructs.Count).rotation;
+
+            // Store the card struct in communityCardStructs
+            communityCardStructs.Add(card);
         }
-        Debug.Log("Community cards have been dealt.");
+        Debug.Log("Community cards dealt: " + numberOfCards);
     }
 
-    // Draw a card from the deck
     private Card DrawCard()
     {
         if (deck.Count == 0)
@@ -480,7 +421,11 @@ public class SinglePlayerGameManager : MonoBehaviour
         return drawnCard;
     }
 
-    // Get the material for a specific card
+    public void FlipCard(GameObject card)
+    {
+        card.transform.Rotate(180.0f, 0.0f, 0.0f);
+    }
+
     private Material GetCardMaterial(Card card)
     {
         int suitIndex = System.Array.IndexOf(new string[] { "Hearts", "Diamonds", "Clubs", "Spades" }, card.Suit);
@@ -495,82 +440,289 @@ public class SinglePlayerGameManager : MonoBehaviour
         return null;
     }
 
-    // Get a card struct from a material (reverse lookup)
-    private Card GetCardFromMaterial(Material mat)
-    {
-        for (int suitIndex = 0; suitIndex < CardAssets.Suits.Length; suitIndex++)
-        {
-            Debug.Log("SEARCHING SUITS FOR CARD FROM MAT");
-            for (int faceIndex = 1; faceIndex < CardAssets.Suits[suitIndex].Faces.Length; faceIndex++)
-            {
-                Debug.Log("SEARCHING CARDS FOR CARD FROM MAT");
 
-                if (CardAssets.Suits[suitIndex].Faces[faceIndex] == mat)
+    // *****************************
+    //         Betting Logic
+    // *****************************
+
+    private IEnumerator GameLoop()
+    {
+        int numberOfPlayers = Players.Length;
+        foldedPlayers = new bool[numberOfPlayers];
+        activePlayers = new bool[numberOfPlayers];
+        currentBets = new int[numberOfPlayers];
+
+        for (int i = 0; i < numberOfPlayers; i++)
+        {
+            activePlayers[i] = true; // all start active
+            foldedPlayers[i] = false;
+        }
+
+        // Assign blinds
+        smallBlindIndex = (dealerIndex + 1) % numberOfPlayers;
+        bigBlindIndex = (dealerIndex + 2) % numberOfPlayers;
+
+        // Post blinds
+        PlaceBet(smallBlindIndex, smallBlind);
+        PlaceBet(bigBlindIndex, bigBlind);
+
+        // Preflop betting
+        yield return StartCoroutine(RunBettingRound(GetNextActivePlayer(bigBlindIndex)));
+
+        if (CheckIfOnlyOnePlayerLeft())
+        {
+            DetermineWinner();
+            yield break;
+        }
+
+        // Flop
+        DealCommunityCards(3);
+        ResetBets();
+        yield return StartCoroutine(RunBettingRound(GetNextActivePlayer(dealerIndex)));
+
+        if (CheckIfOnlyOnePlayerLeft())
+        {
+            DetermineWinner();
+            yield break;
+        }
+
+        // Turn
+        DealCommunityCards(1);
+        ResetBets();
+        yield return StartCoroutine(RunBettingRound(GetNextActivePlayer(dealerIndex)));
+
+        if (CheckIfOnlyOnePlayerLeft())
+        {
+            DetermineWinner();
+            yield break;
+        }
+
+        // River
+        DealCommunityCards(1);
+        ResetBets();
+        yield return StartCoroutine(RunBettingRound(GetNextActivePlayer(dealerIndex)));
+
+        if (CheckIfOnlyOnePlayerLeft())
+        {
+            DetermineWinner();
+            yield break;
+        }
+
+        // Showdown
+        DetermineWinner();
+    }
+
+    private void ResetBets()
+    {
+        currentBet = 0;
+        for (int i = 0; i < currentBets.Length; i++)
+            currentBets[i] = 0;
+    }
+
+    private IEnumerator RunBettingRound(int startIndex)
+    {
+        bool bettingActive = true;
+        while (bettingActive)
+        {
+            bool actionTaken = false;
+            for (int i = 0; i < Players.Length; i++)
+            {
+                int playerIndex = (startIndex + i) % Players.Length;
+                if (!foldedPlayers[playerIndex] && activePlayers[playerIndex] && Players[playerIndex].Balance > 0)
                 {
-                    return new Card { Suit = CardAssets.Suits[suitIndex].Name, Value = faceIndex };
+                    yield return StartCoroutine(RunPlayerTurn(playerIndex));
+                    actionTaken = true;
+
+                    if (AllBetsEqualOrPlayersFolded())
+                    {
+                        bettingActive = false;
+                        break;
+                    }
+                }
+            }
+
+            if (!actionTaken)
+            {
+                bettingActive = false;
+            }
+        }
+    }
+
+    private IEnumerator RunPlayerTurn(int playerIndex)
+    {
+        yield return new WaitForSeconds(0.5f);
+        if (Players[playerIndex].isNPC)
+        {
+            yield return NPCPlayerAction(playerIndex);
+        }
+        else
+        {
+            yield return UserPlayerAction(playerIndex);
+        }
+    }
+
+    private IEnumerator NPCPlayerAction(int playerIndex)
+    {
+        yield return new WaitForSeconds(0.5f);
+        int callAmount = currentBet - currentBets[playerIndex];
+
+
+        if(playerIndex == 2 && !foldedPlayers[playerIndex])
+        {
+            foldedPlayers[playerIndex] = true;
+                
+                //flip folded cards
+                FlipCard(PlayerSlots[playerIndex].transform.GetChild(0).GetChild(0).gameObject);
+                FlipCard(PlayerSlots[playerIndex].transform.GetChild(0).GetChild(1).gameObject);
+
+
+                Debug.Log("FOLDING");
+                Debug.Log("NPC Player " + playerIndex + " folds.");
+                Debug.Log("FOLDING");
+        }
+
+
+        // Very simple NPC logic
+        if (callAmount <= 0)
+        {
+            // Check or minimal bet
+            if (Players[playerIndex].Balance > bigBlind && UnityEngine.Random.value > 0.5f)
+            {
+                PlaceBet(playerIndex, bigBlind);
+            }
+        }
+        else
+        {
+            if (Players[playerIndex].Balance >= callAmount)
+            {
+                PlaceBet(playerIndex, callAmount);
+            }
+            else
+            {
+                foldedPlayers[playerIndex] = true;
+                
+                //flip folded cards
+                FlipCard(PlayerSlots[playerIndex+1].transform.GetChild(0).GetChild(0).gameObject);
+                FlipCard(PlayerSlots[playerIndex+1].transform.GetChild(0).GetChild(1).gameObject);
+
+
+                Debug.Log("FOLDING");
+                Debug.Log("NPC Player " + playerIndex + " folds.");
+                Debug.Log("FOLDING");
+            }
+        }
+    }
+
+    private IEnumerator UserPlayerAction(int playerIndex)
+    {
+        yield return new WaitForSeconds(0.5f);
+        // Placeholder for user input
+        int callAmount = currentBet - currentBets[playerIndex]; //ADD BACK AFTER TESTING
+        //int callAmount = (int)(Players[playerIndex].Balance / 1.5f); // user bets half of balance each round
+        if (callAmount <= 0)
+        {
+            // Check
+            Debug.Log("User checks.");
+        }
+        else
+        {
+            if (Players[playerIndex].Balance >= callAmount)
+            {
+                PlaceBet(playerIndex, callAmount);
+                Debug.Log("User calls " + callAmount);
+            }
+            else
+            {
+                foldedPlayers[playerIndex] = true;
+                Debug.Log("User folds.");
+            }
+        }
+    }
+
+    private void PlaceBet(int playerIndex, int amount)
+    {
+        if (Players[playerIndex].Balance < amount)
+        {
+            amount = Players[playerIndex].Balance; // all-in
+        }
+
+        Players[playerIndex].Balance -= amount;
+        currentBets[playerIndex] += amount;
+        pot += amount;
+
+        if (currentBets[playerIndex] > currentBet)
+        {
+            currentBet = currentBets[playerIndex];
+        }
+
+        Debug.Log("Player " + playerIndex + " bets " + amount + ". Current pot: " + pot);
+    }
+
+    private bool AllBetsEqualOrPlayersFolded()
+    {
+        int matchedBet = -1;
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (!foldedPlayers[i] && activePlayers[i])
+            {
+                if (matchedBet == -1) matchedBet = currentBets[i];
+                if (currentBets[i] != matchedBet) return false;
+            }
+        }
+        return true;
+    }
+
+    private bool CheckIfOnlyOnePlayerLeft()
+    {
+        int count = 0;
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (!foldedPlayers[i] && activePlayers[i]) count++;
+        }
+        return count == 1;
+    }
+
+    private int GetNextActivePlayer(int startIndex)
+    {
+        int idx = (startIndex + 1) % Players.Length;
+        while (foldedPlayers[idx] || !activePlayers[idx])
+        {
+            idx = (idx + 1) % Players.Length;
+        }
+        return idx;
+    }
+
+    private void DetermineWinner()
+    {
+        Debug.Log("Determining winner...");
+        HandEvaluator evaluator = new HandEvaluator();
+
+        int winnerIndex = -1;
+        int bestRank = -1;
+
+        for (int p = 0; p < Players.Length; p++)
+        {
+            if (!foldedPlayers[p])
+            {
+                List<Card> allCards = new List<Card>(Players[p].Hand);
+                
+                // Instead of converting from materials, directly add the community cards from communityCardStructs
+                allCards.AddRange(communityCardStructs);
+
+                int rank = evaluator.EvaluateHand(allCards);
+                Debug.Log("Player " + p + " hand rank: " + rank);
+                if (rank > bestRank)
+                {
+                    bestRank = rank;
+                    winnerIndex = p;
                 }
             }
         }
-        Debug.LogError("Card material not found!");
-        return default;
+
+        Debug.Log("Player " + winnerIndex + " wins the pot of " + pot);
+        Players[winnerIndex].Balance += pot;
+        pot = 0;
     }
 
-    // Determine the winner (basic implementation for demonstration)
-    private void DetermineWinner()
-    {
-        Debug.Log("Determining winner based on player and community cards...");
-
-        // Placeholder logic for determining winner - could be expanded with full poker hand ranking logic
-        int highestValue = 0;
-
-        List<Card> playerHand = new List<Card>();
-
-        // Combine player cards with community cards
-        foreach (GameObject cardObj in playerCards)
-        {
-            Material mat = cardObj.transform.GetChild(0).GetComponent<Renderer>().material;
-            playerHand.Add(GetCardFromMaterial(mat));
-        }
-
-        foreach (GameObject cardObj in communityCards)
-        {
-            Material mat = cardObj.transform.GetChild(0).GetComponent<Renderer>().material;
-            playerHand.Add(GetCardFromMaterial(mat));
-        }
-
-        // Simplified logic for finding the highest value card
-        foreach (Card card in playerHand)
-        {
-            if (card.Value > highestValue)
-            {
-                highestValue = card.Value;
-            }
-        }
-
-        Debug.Log("Player's highest card value: " + highestValue);
-        // Similar logic would need to be applied for NPCs to determine the actual winner
-    }
-
-    // Coroutine for managing the poker game loop
-    private IEnumerator GameLoop()
-    {
-        // Pre-flop phase
-        //DealCards(); MOVED LINE TO BE CALLED IN SetupPlayers();
-        //yield return new WaitForSeconds(2f);
-
-        // Flop phase - deal three community cards
-        DealCommunityCards(3);
-        yield return new WaitForSeconds(2f);
-
-        // Turn phase - deal one community card
-        DealCommunityCards(1);
-        yield return new WaitForSeconds(2f);
-
-        // River phase - deal one community card
-        DealCommunityCards(1);
-        yield return new WaitForSeconds(2f);
-
-        // Determine winner
-        //DetermineWinner();
-    }
+    
 }

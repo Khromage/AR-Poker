@@ -121,6 +121,7 @@ GameObject:
   - component: {fileID: 5360400816616066302}
   - component: {fileID: 3748235202594392365}
   - component: {fileID: 6974260144544822727}
+  - component: {fileID: 7488077989633034904}
   m_Layer: 0
   m_Name: Confirm Button
   m_TagString: Untagged
@@ -233,6 +234,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 6974260144544822727}
+  - {fileID: 7488077989633034904}
 --- !u!114 &6974260144544822727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,3 +251,15 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &7488077989633034904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2706410837814743508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9b32887c234aa41914798398878944, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -97,7 +97,7 @@ public class MultiPlayerGameManager : MonoBehaviour
 
     private void SpawnButton()
     {
-        Vector3 buttonPos = new Vector3(0, 0.5f, 1);
+        Vector3 buttonPos = new Vector3(0, 0, 0);
         Quaternion buttonRot = Quaternion.identity;
             // Spawn the button
         NetworkObject spawnedButton = runner.Spawn(buttonPrefab, buttonPos, buttonRot, runner.LocalPlayer);

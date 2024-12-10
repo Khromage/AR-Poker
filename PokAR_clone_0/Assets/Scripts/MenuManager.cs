@@ -278,6 +278,7 @@ public class MenuManager : MonoBehaviour
 
         // starting game
         multiPlayerManager.StartHost();
+        isGameOn = true;
 
         // Display the generated code on the host UI
         ShowHostCodeView();
@@ -288,8 +289,9 @@ public class MenuManager : MonoBehaviour
 
     }
 
-    public void ViewMultiplayerGame()
+    public void ViewMultiplayerGame() // might not be needed, we have ShowGameUI();
     {
+        ShowGameUI();
 
     }
 

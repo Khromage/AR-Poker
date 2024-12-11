@@ -31,6 +31,9 @@ public class SinglePlayerGameManager : MonoBehaviour
     [SerializeField]
     private GameObject[] PlayerSlots;
 
+    private bool userActionTaken = false;
+    private int currentUserPlayerIndex = -1;
+
     private List<GameObject> activeCards = new List<GameObject>();
     private GameObject gameTable;
     private List<GameObject> chips = new List<GameObject>();
@@ -646,30 +649,113 @@ public class SinglePlayerGameManager : MonoBehaviour
         }
     }
 
-    private IEnumerator UserPlayerAction(int playerIndex)
+    // This will be called by external code (e.g., GameManager) once the user chooses an action.
+public void HandleCall(int playerIndex)
+{
+    int callAmount = currentBet - currentBets[playerIndex];
+    if (callAmount > 0 && Players[playerIndex].Balance >= callAmount)
     {
-        yield return new WaitForSeconds(0.5f);
-        // Placeholder for user input
-        int callAmount = currentBet - currentBets[playerIndex];
-        if (callAmount <= 0)
-        {
-            // Check
-            Debug.Log("User checks.");
-        }
-        else
-        {
-            if (Players[playerIndex].Balance >= callAmount)
-            {
-                PlaceBet(playerIndex, callAmount);
-                Debug.Log("User calls " + callAmount);
-            }
-            else
-            {
-                foldedPlayers[playerIndex] = true;
-                Debug.Log("User folds.");
-            }
-        }
+        PlaceBet(playerIndex, callAmount);
+        Debug.Log("User calls " + callAmount);
     }
+    else if (callAmount <= 0)
+    {
+        // If callAmount is 0 or negative, that means we can just check
+        HandleCheck(playerIndex);
+        return;
+    }
+    userActionTaken = true;
+}
+
+public void HandleRaise(int playerIndex, int raiseAmount)
+{
+    int callAmount = currentBet - currentBets[playerIndex];
+    int totalBet = callAmount + raiseAmount;
+
+    if (Players[playerIndex].Balance >= totalBet)
+    {
+        // First call the current amount
+        if (callAmount > 0)
+            PlaceBet(playerIndex, callAmount);
+
+        // Then raise further
+        PlaceBet(playerIndex, raiseAmount);
+        Debug.Log("User raises by " + raiseAmount);
+    }
+    else
+    {
+        Debug.Log("User tried to raise but doesn't have enough balance!");
+        // You could handle this case differently depending on game logic
+    }
+    userActionTaken = true;
+}
+
+public void HandleCheck(int playerIndex)
+{
+    int callAmount = currentBet - currentBets[playerIndex];
+    if (callAmount <= 0)
+    {
+        Debug.Log("User checks.");
+    }
+    else
+    {
+        Debug.Log("User cannot check right now, must call/fold/raise!");
+        // This could be handled differently depending on the game logic.
+    }
+    userActionTaken = true;
+}
+
+public void HandleFold(int playerIndex)
+{
+    foldedPlayers[playerIndex] = true;
+    // Flip folded cards (if not already flipped)
+    FlipCard(PlayerSlots[playerIndex].transform.GetChild(0).GetChild(0).gameObject);
+    FlipCard(PlayerSlots[playerIndex].transform.GetChild(0).GetChild(1).gameObject);
+
+    Debug.Log("User folds.");
+    userActionTaken = true;
+}
+
+public void HandleView(int playerIndex)
+{
+    // Display the user's cards in screen space
+    // This could involve enabling a UI panel, rendering card images, etc.
+    // For demonstration, we'll just log and assume there's a method DisplayCardsOnScreen()
+
+    DisplayCardsOnScreen(Players[playerIndex].Hand);
+
+    // Viewing cards doesn't end the turn, so we do NOT set userActionTaken to true here.
+    // The user still needs to choose Call, Check, Fold, or Raise afterward.
+}
+
+// Example of a method that displays cards on screen
+private void DisplayCardsOnScreen(Card[] cards)
+{
+    // Implementation detail: Could open a UI canvas, display card sprites, etc.
+    // Here we just log for now.
+    Debug.Log("Displaying user's cards on screen:");
+    foreach (var c in cards)
+    {
+        Debug.Log(c.Suit + " " + c.Value);
+    }
+}
+
+// Modified UserPlayerAction method
+private IEnumerator UserPlayerAction(int playerIndex)
+{
+    currentUserPlayerIndex = playerIndex;
+    userActionTaken = false;
+    Debug.Log("Waiting for user action...");
+
+    // Now just wait until userActionTaken is set to true by one of the Handle* methods.
+    while (!userActionTaken)
+    {
+        // We do nothing here, just wait until some external call triggers an action.
+        yield return null;
+    }
+
+    Debug.Log("User action completed, proceeding with game.");
+}
 
     private void PlaceBet(int playerIndex, int amount)
 {

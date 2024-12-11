@@ -108,5 +108,42 @@ public class GameManager : MonoBehaviour
             Debug.Log("No active game to end.");
         }
     }
-    
+
+    public void sendCheckToGame()
+    {
+        if(CurrentGame.GetComponent<SinglePlayerGameManager>() != null)
+        {
+            CurrentGame.GetComponent<SinglePlayerGameManager>().HandleCheck();
+        }
+    }
+    public void sendCallToGame()
+    {
+        if(CurrentGame.GetComponent<SinglePlayerGameManager>() != null)
+        {
+            CurrentGame.GetComponent<SinglePlayerGameManager>().HandleCall();
+        }
+    }
+    public void sendRaiseToGame(float raiseFactor)
+    {
+        if(CurrentGame.GetComponent<SinglePlayerGameManager>() != null)
+        {
+            CurrentGame.GetComponent<SinglePlayerGameManager>().HandleRaise(raiseFactor);
+        }
+    }
+    public void sendFoldToGame()
+    {
+        if(CurrentGame.GetComponent<SinglePlayerGameManager>() != null)
+        {
+            CurrentGame.GetComponent<SinglePlayerGameManager>().HandleFold();
+        }
+    }
+    public void viewHandCardsGame()
+    {
+        if(CurrentGame.GetComponent<SinglePlayerGameManager>() != null)
+        {
+            CurrentGame.GetComponent<SinglePlayerGameManager>().HandleView();
+        }
+    }
+
+
 }

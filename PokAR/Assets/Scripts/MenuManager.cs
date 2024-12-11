@@ -50,7 +50,7 @@ public class MenuManager : MonoBehaviour
     private bool isGameOn;
     private string gameDifficulty;
 
-
+    private float raiseFactor;
 
     void Start() 
     {
@@ -228,6 +228,32 @@ public class MenuManager : MonoBehaviour
         }
     }
 
+    public void sendCheckToGM()
+    {
+        GameManager.Instance.sendCheckToGame();
+    }
+    public void sendCallToGM()
+    {
+        GameManager.Instance.sendCallToGame();
+    }
+
+    public void updateraiseFactor(GameObject raiseSlider)
+    {
+        raiseFactor = raiseSlider.transform.GetComponent<Slider>().value;
+    }
+
+    public void sendRaiseToGM()
+    {
+        GameManager.Instance.sendRaiseToGame(raiseFactor);
+    }
+    public void sendFoldToGM()
+    {
+        GameManager.Instance.sendFoldToGame();
+    }
+    public void viewHandCardsGM()
+    {
+    GameManager.Instance.viewHandCardsGame();
+    }
 
     public void StartSinglePlayerGame(GameObject npcSlider)
     {

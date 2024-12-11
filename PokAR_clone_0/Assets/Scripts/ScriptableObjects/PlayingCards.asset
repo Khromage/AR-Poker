@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34a5aeb72286cda4a9740f16ecfa0cfb, type: 3}
+  m_Name: PlayingCards
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 6693579161954670957, guid: a229abbcfde059845b052619b811dfa9, type: 3}
+  Backs:
+  - {fileID: 2100000, guid: d67405ddc376e4749a910a7b66aa523d, type: 2}
+  - {fileID: 2100000, guid: eec59a3e0a4e81b418dd466033e05346, type: 2}
+  - {fileID: 2100000, guid: 162128f5f920c0f44aa74a1437156cdd, type: 2}
+  Suits:
+  - Name: Clubs
+    Faces:
+    - {fileID: 2100000, guid: 6404e0205f7ca8c4ea353cdf33181eb3, type: 2}
+    - {fileID: 2100000, guid: 8638ca68989d56e4bbbf751a165306d9, type: 2}
+    - {fileID: 2100000, guid: 106860452f444b84d97a25324788be94, type: 2}
+    - {fileID: 2100000, guid: 998e44c7ff3b1ff44a7c8ae8f26c6244, type: 2}
+    - {fileID: 2100000, guid: ab36a5f5bd649844e997e58f675682d9, type: 2}
+    - {fileID: 2100000, guid: 3e11c31f51faee1499dc62d7a51febd3, type: 2}
+    - {fileID: 2100000, guid: 3af89eedd44ebab47be847b6333ec03e, type: 2}
+    - {fileID: 2100000, guid: 531caa92c69c4284aac5892f4affea36, type: 2}
+    - {fileID: 2100000, guid: 24e94bc4bce3e10489db42f46818622c, type: 2}
+    - {fileID: 2100000, guid: e176f43ff6aa8a14db96ecf1570d7aff, type: 2}
+    - {fileID: 2100000, guid: e257561a551e1ad4a9f9b4df32d82e3e, type: 2}
+    - {fileID: 2100000, guid: 4c680fd1fb9adeb43b69bb09cff2dab7, type: 2}
+    - {fileID: 2100000, guid: 61b5176cb6ff0144da19b96eb8045a83, type: 2}
+    - {fileID: 2100000, guid: f1fc1337730c3f647a2a44f875caf07d, type: 2}
+  - Name: Diamonds
+    Faces:
+    - {fileID: 2100000, guid: 8fb2d66acefdaf64ba63475f9152e454, type: 2}
+    - {fileID: 2100000, guid: 0e3f06a1f2f6c6d4187593621c8efcf4, type: 2}
+    - {fileID: 2100000, guid: 0e2f5dbcab34ed84c81f0ed33347ebb9, type: 2}
+    - {fileID: 2100000, guid: 1d78bfed82bcddd439126ee966e3b957, type: 2}
+    - {fileID: 2100000, guid: 31c9180c8b0456f4ca25c8c55ba9da79, type: 2}
+    - {fileID: 2100000, guid: 8719d9fc24df01a41bac60f5b95b6fdc, type: 2}
+    - {fileID: 2100000, guid: ddb3738e021afac4fa2f80b4ce4e146d, type: 2}
+    - {fileID: 2100000, guid: c3af1a53d7ade47489ba08890cecddb0, type: 2}
+    - {fileID: 2100000, guid: dc634fc2dc615de46bb0b2b5e4a74bb2, type: 2}
+    - {fileID: 2100000, guid: c28f1d9bbe6cdb84e8206c1c76ff9b56, type: 2}
+    - {fileID: 2100000, guid: da2b02197bbe94841b107e202e1fed7b, type: 2}
+    - {fileID: 2100000, guid: 1372763c6ed15a646a5fea97c58759ee, type: 2}
+    - {fileID: 2100000, guid: 3cac270bdb4c0a64287fdfd05c48998a, type: 2}
+    - {fileID: 2100000, guid: b555630a65df00a41a2d7fec35fa80e7, type: 2}
+  - Name: Hearts
+    Faces:
+    - {fileID: 2100000, guid: 8fb2d66acefdaf64ba63475f9152e454, type: 2}
+    - {fileID: 2100000, guid: 4b244b4f159795f46b0786dcb05102a9, type: 2}
+    - {fileID: 2100000, guid: eb5895c843a6fa840a898be054d15c79, type: 2}
+    - {fileID: 2100000, guid: ad5778c3a750c614bb61388c2a3f6112, type: 2}
+    - {fileID: 2100000, guid: 6bedacdcd19b63a40a3cde69eaa5c220, type: 2}
+    - {fileID: 2100000, guid: a2542c2eccb3a8c4ca38f3188f47c304, type: 2}
+    - {fileID: 2100000, guid: 81f074c083046284f846949d017c865e, type: 2}
+    - {fileID: 2100000, guid: 88fdd2b7419d6774b9c2ffcd64af1d51, type: 2}
+    - {fileID: 2100000, guid: d09e16573a10a004699e86d8a0d5b131, type: 2}
+    - {fileID: 2100000, guid: e7dde2926ea92e842afd4aad6a3cc94e, type: 2}
+    - {fileID: 2100000, guid: 2824091139f2edb42be9a5da407fc0e2, type: 2}
+    - {fileID: 2100000, guid: 62dcc51b94a8c3141b160ddce657d8b3, type: 2}
+    - {fileID: 2100000, guid: 2f9541cc5768b9c45a3a806767b61e58, type: 2}
+    - {fileID: 2100000, guid: b6c42e09831b6e54dac2319013fd1d26, type: 2}
+  - Name: Spades
+    Faces:
+    - {fileID: 2100000, guid: 6404e0205f7ca8c4ea353cdf33181eb3, type: 2}
+    - {fileID: 2100000, guid: f49569169e5c3a346a5766bf07852ae8, type: 2}
+    - {fileID: 2100000, guid: 3866e3887298ef24c925fba1b6397595, type: 2}
+    - {fileID: 2100000, guid: bb9eebed68b769d4fb0ed0969395cfb1, type: 2}
+    - {fileID: 2100000, guid: 3423810cf2be62447af9681ae796bf39, type: 2}
+    - {fileID: 2100000, guid: 7e97c844a9e00294cb2501a133f38416, type: 2}
+    - {fileID: 2100000, guid: 807d7ccaf24780c4da35852a7f4ac27f, type: 2}
+    - {fileID: 2100000, guid: 29978b8f3233c684ebc1c10a8f7d85fa, type: 2}
+    - {fileID: 2100000, guid: 7fa71d630259d0a4aadb50e59163f5a1, type: 2}
+    - {fileID: 2100000, guid: 756642e5c4b1fb54893c689b381a0bda, type: 2}
+    - {fileID: 2100000, guid: e00e05f4dedfa8d4c8d41c5882d3a894, type: 2}
+    - {fileID: 2100000, guid: b70b827547907fb49b9416e7817f868f, type: 2}
+    - {fileID: 2100000, guid: 866d26c30dc863243a0043db766fad49, type: 2}
+    - {fileID: 2100000, guid: 9bc01f072181a164cb7decc87887f451, type: 2}

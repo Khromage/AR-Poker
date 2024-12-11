@@ -95,6 +95,16 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void SetupMultiPlayerGame()
+    {
+        if (CurrentGame == null)
+        {
+            CurrentGame = Instantiate(MultiPlayerPrefab);
+            var mpManager = CurrentGame.GetComponent<MultiPlayerGameManager>();
+            mpManager.Initialize();
+        }
+    }
+
     public void EndCurrentGame()
     {
         if (CurrentGame != null)

@@ -23,6 +23,8 @@ public class MenuManager : MonoBehaviour
     public GameObject multiPlayerMenu_portrait;
     public GameObject multiPlayerHostCodeView_portrait;
     public GameObject multiplayerJoinRoomView_portrait;
+    public GameObject multiplayerHostLobbyStart_portrait;
+    public GameObject settings_portrait;
 
     //landscape game objects
     public GameObject mainMenu_landscape;
@@ -34,6 +36,8 @@ public class MenuManager : MonoBehaviour
     public GameObject multiPlayerMenu_landscape;
     public GameObject multiPlayerHostCodeView_landscape;
     public GameObject multiplayerJoinRoomView_landscape;
+    public GameObject multiplayerHostLobbyStart_landscape;
+    public GameObject settings_landscape;
 
 
     // gameplay UI
@@ -42,6 +46,8 @@ public class MenuManager : MonoBehaviour
     public GameObject gameMenu_portrait;
     public GameObject gameMenu_landscape;
     public GameObject gameMenu_tableConfirmation;
+    public TMP_Text lobbyCodeOutput_portrait;
+    public TMP_Text lobbyCodeOutput_landscape;
 
     // tracking
     private GameObject currentMenu;
@@ -147,6 +153,10 @@ public class MenuManager : MonoBehaviour
             {
                 ShowJoinRoomView();
             }
+            else if (currentMenu == settings_portrait || currentMenu == settings_landscape)
+            {
+                ShowSettings();
+            }
         }
     }
 
@@ -187,6 +197,10 @@ public class MenuManager : MonoBehaviour
         setActiveMenu(isPortrait ? quitConfirmation_portrait : quitConfirmation_landscape);
     }
 
+    public void ShowSettings()
+    {
+        setActiveMenu(isPortrait ? settings_portrait : settings_landscape);
+    }
     public void ShowMultiPlayerMenu()
     {
         setActiveMenu(isPortrait ? multiPlayerMenu_portrait : multiPlayerMenu_landscape);
@@ -200,6 +214,11 @@ public class MenuManager : MonoBehaviour
     public void ShowJoinRoomView()
     {
         setActiveMenu(isPortrait ? multiplayerJoinRoomView_portrait : multiplayerJoinRoomView_landscape);
+    }
+
+    public void ShowHostLobbyStartView()
+    {
+        setActiveMenu(isPortrait ? multiplayerHostLobbyStart_portrait : multiplayerHostLobbyStart_landscape);
     }
 
     private void setActiveMenu(GameObject newMenu)
@@ -277,21 +296,37 @@ public class MenuManager : MonoBehaviour
 
     public void StartMultiplayerHost()
     {
-        GameManager.Instance.CurrentGame = Instantiate(GameManager.Instance.MultiPlayerPrefab);
+        //GameManager.Instance.CurrentGame = Instantiate(GameManager.Instance.MultiPlayerPrefab);
+        //var multiPlayerManager = GameManager.Instance.CurrentGame.GetComponent<MultiPlayerGameManager>();
+        GameManager.Instance.SetupMultiPlayerGame();
         var multiPlayerManager = GameManager.Instance.CurrentGame.GetComponent<MultiPlayerGameManager>();
-        multiPlayerManager.Initialize();
+        //multiPlayerManager.Initialize();
+
+        // starting game
+        multiPlayerManager.StartHost();
+        isGameOn = true;
 
         // Display the generated code on the host UI
         ShowHostCodeView();
         Debug.Log($"Generated Lobby Code: {multiPlayerManager.GeneratedCode}");
+        lobbyCodeOutput_portrait.SetText($"{multiPlayerManager.GeneratedCode}");
+        lobbyCodeOutput_landscape.SetText($"{multiPlayerManager.GeneratedCode}");
+        // i'll clean this up
+
     }
 
-    public void JoinMultiplayerGame(InputField inputField)
+    public void ViewMultiplayerGame() // might not be needed, we have ShowGameUI();
+    {
+        ShowGameUI();
+
+    }
+
+    public void JoinMultiplayerGame(TMP_InputField inputField)
     {
         string lobbyCode = inputField.text.ToUpper();
         if (lobbyCode.Length == 4)
         {
-            Debug.Log($"Attempting to join lobby: {lobbyCode}");
+            GameManager.Instance.SetupMultiPlayerGame();
             var multiPlayerManager = GameManager.Instance.CurrentGame.GetComponent<MultiPlayerGameManager>();
             multiPlayerManager.JoinRoom(lobbyCode);
         }
@@ -320,9 +355,10 @@ public class MenuManager : MonoBehaviour
         ShowMainMenu();
     }
 
-    public void ShowGameUI()
+    public void ShowGameUI() // shows game UI
     {
         gameMenu_tableConfirmation.SetActive(false);
+        currentMenu.SetActive(false);
         if(isPortrait)
         {
             gameplay_landscape.SetActive(false);

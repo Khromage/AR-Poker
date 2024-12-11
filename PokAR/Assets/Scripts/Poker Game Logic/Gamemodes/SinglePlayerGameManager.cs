@@ -260,6 +260,8 @@ public class SinglePlayerGameManager : MonoBehaviour
 
             Transform spawnLocation = gameTable.transform.GetChild(player+1).GetChild(3).transform;
             GameObject playerAvatar = Instantiate(AvatarAssets.Avatars[avatarPrefabIndex], spawnLocation.position, spawnLocation.rotation);
+            // Make avatar a child of its spawn location
+            playerAvatar.transform.SetParent(spawnLocation);
             usedAvatarIndices.Add(avatarPrefabIndex);
         }
     }
@@ -295,6 +297,9 @@ public class SinglePlayerGameManager : MonoBehaviour
             for(int i=0; i<numEachChip[0]; i++)
             {
                 GameObject chipGO = Instantiate(ChipAssets.Prefab, stackSlot.position, stackSlot.rotation);
+                // Make chip a child of stackSlot
+                chipGO.transform.SetParent(stackSlot);
+                
                 chipGO.transform.GetChild(0).GetComponent<Renderer>().material = ChipAssets.Chips[1].material;
                 Players[p].Chips[0].Add(chipGO);
                 chipGO.transform.position = stackSlot.position + Vector3.up * (0.00325f * stackHeight);
@@ -309,6 +314,9 @@ public class SinglePlayerGameManager : MonoBehaviour
             for(int i=0; i<numEachChip[1]; i++)
             {
                 GameObject chipGO = Instantiate(ChipAssets.Prefab, stackSlot.position, stackSlot.rotation);
+                // Make chip a child of stackSlot
+                chipGO.transform.SetParent(stackSlot);
+
                 chipGO.transform.GetChild(0).GetComponent<Renderer>().material = ChipAssets.Chips[2].material;
                 Players[p].Chips[1].Add(chipGO);
                 chipGO.transform.position = stackSlot.position + Vector3.up * (0.00325f * stackHeight);
@@ -323,6 +331,9 @@ public class SinglePlayerGameManager : MonoBehaviour
             for(int i=0; i<numEachChip[2]; i++)
             {
                 GameObject chipGO = Instantiate(ChipAssets.Prefab, stackSlot.position, stackSlot.rotation);
+                // Make chip a child of stackSlot
+                chipGO.transform.SetParent(stackSlot);
+
                 chipGO.transform.GetChild(0).GetComponent<Renderer>().material = ChipAssets.Chips[3].material;
                 Players[p].Chips[2].Add(chipGO);
                 chipGO.transform.position = stackSlot.position + Vector3.up * (0.00325f * stackHeight);
@@ -356,14 +367,18 @@ public class SinglePlayerGameManager : MonoBehaviour
         {
             Card card = DrawCard();
             GameObject cardObj = Instantiate(CardAssets.Prefab, gameObject.transform);
+            // Make card a child of the card slot
+            Transform cardSlot = gameTable.transform.GetChild(1).GetChild(0).GetChild(i);
+            cardObj.transform.SetParent(cardSlot);
+
             cardObj.transform.GetChild(0).GetComponent<Renderer>().material = GetCardMaterial(card);
             cardObj.transform.GetChild(1).GetComponent<Renderer>().material = CardBackMaterial;
             Players[0].Hand[i] = card;
             activeCards.Add(cardObj);
 
             cardObj.transform.localScale /= 2;
-            cardObj.transform.position = gameTable.transform.GetChild(1).GetChild(0).GetChild(i).transform.position;
-            cardObj.transform.rotation = gameTable.transform.GetChild(1).GetChild(0).GetChild(i).transform.rotation;
+            cardObj.transform.position = cardSlot.position;
+            cardObj.transform.rotation = cardSlot.rotation;
         }
 
         // NPCs
@@ -373,14 +388,18 @@ public class SinglePlayerGameManager : MonoBehaviour
             {
                 Card card = DrawCard();
                 GameObject cardObj = Instantiate(CardAssets.Prefab, gameObject.transform);
+                // Make card a child of the NPC card slot
+                Transform cardSlot = gameTable.transform.GetChild(npc+1).GetChild(0).GetChild(i);
+                cardObj.transform.SetParent(cardSlot);
+
                 cardObj.transform.GetChild(0).GetComponent<Renderer>().material = GetCardMaterial(card);
                 cardObj.transform.GetChild(1).GetComponent<Renderer>().material = CardBackMaterial;
                 Players[npc].Hand[i] = card;
                 activeCards.Add(cardObj);
 
                 cardObj.transform.localScale /= 2;
-                cardObj.transform.position = gameTable.transform.GetChild(npc+1).GetChild(0).GetChild(i).transform.position;
-                cardObj.transform.rotation = gameTable.transform.GetChild(npc+1).GetChild(0).GetChild(i).transform.rotation;
+                cardObj.transform.position = cardSlot.position;
+                cardObj.transform.rotation = cardSlot.rotation;
             }
         }
         Debug.Log("Cards have been dealt.");
@@ -392,14 +411,18 @@ public class SinglePlayerGameManager : MonoBehaviour
         {
             Card card = DrawCard();
             GameObject cardObj = Instantiate(CardAssets.Prefab, gameObject.transform);
+            // Make community card a child of the community card slot
+            Transform communityCardSlot = gameTable.transform.GetChild(0).GetChild(communityCardStructs.Count);
+            cardObj.transform.SetParent(communityCardSlot);
+
             cardObj.transform.GetChild(0).GetComponent<Renderer>().material = GetCardMaterial(card);
             cardObj.transform.GetChild(1).GetComponent<Renderer>().material = CardBackMaterial;
             communityCards.Add(cardObj);
             activeCards.Add(cardObj);
 
             cardObj.transform.localScale /= 2;
-            cardObj.transform.position = gameTable.transform.GetChild(0).GetChild(communityCardStructs.Count).position;
-            cardObj.transform.rotation = gameTable.transform.GetChild(0).GetChild(communityCardStructs.Count).rotation;
+            cardObj.transform.position = communityCardSlot.position;
+            cardObj.transform.rotation = communityCardSlot.rotation;
 
             // Store the card struct in communityCardStructs
             communityCardStructs.Add(card);
@@ -571,14 +594,14 @@ public class SinglePlayerGameManager : MonoBehaviour
         {
             foldedPlayers[playerIndex] = true;
                 
-                //flip folded cards
-                FlipCard(PlayerSlots[playerIndex].transform.GetChild(0).GetChild(0).gameObject);
-                FlipCard(PlayerSlots[playerIndex].transform.GetChild(0).GetChild(1).gameObject);
+            //flip folded cards
+            FlipCard(PlayerSlots[playerIndex].transform.GetChild(0).GetChild(0).gameObject);
+            FlipCard(PlayerSlots[playerIndex].transform.GetChild(0).GetChild(1).gameObject);
 
 
-                Debug.Log("FOLDING");
-                Debug.Log("NPC Player " + playerIndex + " folds.");
-                Debug.Log("FOLDING");
+            Debug.Log("FOLDING");
+            Debug.Log("NPC Player " + playerIndex + " folds.");
+            Debug.Log("FOLDING");
         }
 
 
@@ -617,8 +640,7 @@ public class SinglePlayerGameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         // Placeholder for user input
-        int callAmount = currentBet - currentBets[playerIndex]; //ADD BACK AFTER TESTING
-        //int callAmount = (int)(Players[playerIndex].Balance / 1.5f); // user bets half of balance each round
+        int callAmount = currentBet - currentBets[playerIndex];
         if (callAmount <= 0)
         {
             // Check
@@ -705,8 +727,6 @@ public class SinglePlayerGameManager : MonoBehaviour
             if (!foldedPlayers[p])
             {
                 List<Card> allCards = new List<Card>(Players[p].Hand);
-                
-                // Instead of converting from materials, directly add the community cards from communityCardStructs
                 allCards.AddRange(communityCardStructs);
 
                 int rank = evaluator.EvaluateHand(allCards);
@@ -723,6 +743,4 @@ public class SinglePlayerGameManager : MonoBehaviour
         Players[winnerIndex].Balance += pot;
         pot = 0;
     }
-
-    
 }

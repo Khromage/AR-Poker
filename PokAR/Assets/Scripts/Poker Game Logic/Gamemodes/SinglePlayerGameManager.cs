@@ -38,6 +38,10 @@ public class SinglePlayerGameManager : MonoBehaviour
     private List<GameObject> communityCards = new List<GameObject>();
     private List<Card> communityCardStructs = new List<Card>();
 
+    private Transform[] PotChipSlots;
+    private List<GameObject>[] PotChips;
+
+
     private List<GameObject> playerCards = new List<GameObject>();
     private List<GameObject>[] npcCards;
 
@@ -269,6 +273,12 @@ public class SinglePlayerGameManager : MonoBehaviour
     private void SetupTable(Vector3 position, Quaternion rotation)
     {
         gameTable = Instantiate(TableAssets.Tables[0].Prefab, position, rotation, gameObject.transform);
+
+        PotChipSlots = new Transform[4];
+        for(int i=0; i<4; i++)
+        {
+            PotChipSlots[i] = gameTable.transform.GetChild(0).GetChild(5).GetChild(i).transform;
+        }
         Debug.Log("Table has been set up.");
     }
 
@@ -662,23 +672,84 @@ public class SinglePlayerGameManager : MonoBehaviour
     }
 
     private void PlaceBet(int playerIndex, int amount)
+{
+    if (Players[playerIndex].Balance < amount)
     {
-        if (Players[playerIndex].Balance < amount)
-        {
-            amount = Players[playerIndex].Balance; // all-in
-        }
-
-        Players[playerIndex].Balance -= amount;
-        currentBets[playerIndex] += amount;
-        pot += amount;
-
-        if (currentBets[playerIndex] > currentBet)
-        {
-            currentBet = currentBets[playerIndex];
-        }
-
-        Debug.Log("Player " + playerIndex + " bets " + amount + ". Current pot: " + pot);
+        amount = Players[playerIndex].Balance; // all-in if not enough
     }
+
+    Players[playerIndex].Balance -= amount;
+    currentBets[playerIndex] += amount;
+    pot += amount;
+
+    if (currentBets[playerIndex] > currentBet)
+    {
+        currentBet = currentBets[playerIndex];
+    }
+
+    Debug.Log("Player " + playerIndex + " bets " + amount + ". Current pot: " + pot);
+
+    // Instantiate pot chips for the bet
+    SpawnPotChipsFromBet(playerIndex, amount);
+}
+
+private void SpawnPotChipsFromBet(int playerIndex, int amount)
+{
+    // Define the chip denominations to use (e.g., 10, 5, 1)
+    int[] chipValues = { 10, 5, 1 };
+    Material[] chipMaterials = { 
+        ChipAssets.Chips[3].material, // 10-value chip material
+        ChipAssets.Chips[2].material, // 5-value chip material
+        ChipAssets.Chips[1].material  // 1-value chip material
+    };
+
+    int potSlotIndex = 0; // Choose which pot slot to use. Could be randomized or rotated.
+    Transform potSlotTransform = PotChipSlots[potSlotIndex];
+
+    // We can maintain a separate data structure for pot chips if desired.
+    // Ensure PotChips is initialized:
+    if (PotChips == null || PotChips.Length == 0)
+    {
+        PotChips = new List<GameObject>[4];
+        for (int i=0; i<4; i++)
+        {
+            PotChips[i] = new List<GameObject>();
+        }
+    }
+
+    // Break down the amount into chip denominations
+    for (int denomIndex = 0; denomIndex < chipValues.Length; denomIndex++)
+    {
+        int chipValue = chipValues[denomIndex];
+        Material chipMat = chipMaterials[denomIndex];
+        
+        int numChips = amount / chipValue;
+        amount = amount % chipValue;
+
+        for (int i = 0; i < numChips; i++)
+        {
+            // Instantiate a single chip at the pot slot
+            GameObject chipGO = Instantiate(ChipAssets.Prefab, potSlotTransform.position, potSlotTransform.rotation);
+            chipGO.transform.SetParent(potSlotTransform);
+
+            // Set chip material
+            chipGO.transform.GetChild(0).GetComponent<Renderer>().material = chipMat;
+
+            // Positioning logic:
+            // We stack them with a slight vertical offset and a small rotation
+            // similar to how we did in SetupChips()
+            int stackHeight = PotChips[potSlotIndex].Count;
+            chipGO.transform.position = potSlotTransform.position + Vector3.up * (0.00325f * stackHeight);
+            chipGO.transform.Rotate(0.0f, 20.0f * stackHeight, 0.0f);
+
+            PotChips[potSlotIndex].Add(chipGO);
+        }
+    }
+
+    // If amount > 0 after this, it means it didn't break down completely 
+    // (shouldn't happen if denominations cover all amounts)
+}
+
 
     private bool AllBetsEqualOrPlayersFolded()
     {
